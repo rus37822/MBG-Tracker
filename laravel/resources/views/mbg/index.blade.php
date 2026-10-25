@@ -325,6 +325,9 @@
                 color: var(--hero-subtext);
             }
 
+            :root[data-theme="dark"] .comparison-value.is-up { color: #6de0a8; }
+            :root[data-theme="dark"] .comparison-value.is-down { color: #ff9b93; }
+
             :root[data-theme="dark"] .brand-copy span,
             :root[data-theme="dark"] .panel-header span,
             :root[data-theme="dark"] .history-filter label,
@@ -687,6 +690,27 @@
             .stat-card:nth-child(1) .value { color: var(--primary-strong); }
             .stat-card:nth-child(2) .value { color: #4a9ae6; }
             .stat-card:nth-child(3) .value { color: #7dbaf3; }
+
+            .stat-card .comparison-value {
+                display: block;
+                margin-top: 4px;
+                font-size: clamp(2rem, 4vw, 2.7rem);
+                line-height: 1;
+                font-weight: 800;
+                letter-spacing: -0.06em;
+            }
+
+            .comparison-value.is-up { color: #168457; }
+            .comparison-value.is-down { color: #c2413b; }
+            .comparison-value.is-even { color: var(--primary-strong); }
+
+            .stat-card .comparison-detail {
+                display: block;
+                margin-top: 10px;
+                color: var(--muted);
+                font-size: 0.78rem;
+                line-height: 1.5;
+            }
 
             .today-chart {
                 grid-column: 1 / -1;
@@ -2538,6 +2562,143 @@
                     min-height: 150px;
                 }
             }
+
+            :root:not([data-theme="dark"]) {
+                --bg-1: #eef7ff;
+                --bg-2: #f8fbff;
+                --panel: rgba(255, 255, 255, 0.94);
+                --panel-strong: #ffffff;
+                --primary: #78baf4;
+                --primary-strong: #2563a8;
+                --secondary: #e7f2ff;
+                --accent: #cfe5ff;
+                --success: #347fc1;
+                --text: #18334b;
+                --muted: #61768a;
+                --line: rgba(47, 109, 176, 0.14);
+                --shadow: 0 18px 48px rgba(35, 75, 112, 0.09);
+                --input-bg: #fbfdff;
+                --input-border: rgba(47, 109, 176, 0.2);
+                --hero-bg-1: #12345c;
+                --hero-bg-2: #1b5b9a;
+                --hero-bg-3: #398bd0;
+                --hero-bg-4: #17415b;
+                --hero-text: #f5fbff;
+                --hero-subtext: rgba(245, 251, 255, 0.82);
+                --button-soft: rgba(37, 99, 168, 0.08);
+            }
+
+            :root:not([data-theme="dark"]) body {
+                background:
+                    radial-gradient(circle at 8% 4%, rgba(118, 202, 226, 0.2), transparent 25%),
+                    radial-gradient(circle at 92% 78%, rgba(135, 190, 238, 0.2), transparent 28%),
+                    linear-gradient(145deg, var(--bg-1), var(--bg-2) 58%, #f2f8ff);
+            }
+
+            :root:not([data-theme="dark"]) .ambient-1 {
+                background: rgba(82, 157, 224, 0.32);
+            }
+
+            :root:not([data-theme="dark"]) .ambient-2 {
+                background: rgba(92, 165, 212, 0.3);
+            }
+
+            :root:not([data-theme="dark"]) .topbar {
+                border-color: rgba(255, 255, 255, 0.92);
+                background: rgba(255, 255, 255, 0.82);
+                box-shadow: 0 12px 34px rgba(35, 75, 112, 0.08);
+            }
+
+            :root:not([data-theme="dark"]) .hero-panel {
+                border-color: rgba(255, 255, 255, 0.22);
+                background: linear-gradient(122deg, var(--hero-bg-1) 0%, var(--hero-bg-2) 48%, var(--hero-bg-3) 100%);
+                color: var(--hero-text);
+                box-shadow: 0 28px 68px rgba(29, 79, 133, 0.22);
+            }
+
+            :root:not([data-theme="dark"]) .hero-copy p {
+                color: var(--hero-subtext);
+            }
+
+            :root:not([data-theme="dark"]) .eyebrow {
+                background: rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 255, 255, 0.22);
+            }
+
+            :root:not([data-theme="dark"]) .primary-btn,
+            :root:not([data-theme="dark"]) .submit-button,
+            :root:not([data-theme="dark"]) .daily-menu-upload-link {
+                border-color: transparent;
+                background: linear-gradient(135deg, #2563a8, #398bd0);
+                color: #ffffff;
+                box-shadow: 0 12px 24px rgba(37, 99, 168, 0.2);
+            }
+
+            :root:not([data-theme="dark"]) .secondary-btn,
+            :root:not([data-theme="dark"]) .theme-toggle {
+                border-color: var(--line);
+                background: rgba(255, 255, 255, 0.76);
+                color: var(--text);
+            }
+
+            :root:not([data-theme="dark"]) .stat-card,
+            :root:not([data-theme="dark"]) .panel,
+            :root:not([data-theme="dark"]) .today-chart {
+                border-color: rgba(47, 109, 176, 0.1);
+                background: rgba(255, 255, 255, 0.88);
+                box-shadow: 0 16px 38px rgba(35, 75, 112, 0.07);
+            }
+
+            :root:not([data-theme="dark"]) .stat-card::after {
+                background: linear-gradient(90deg, #438bd0, #82c5f0);
+            }
+
+            :root:not([data-theme="dark"]) .stat-card:nth-child(1) .value,
+            :root:not([data-theme="dark"]) .stat-card:nth-child(2) .value,
+            :root:not([data-theme="dark"]) .stat-card:nth-child(3) .value {
+                color: var(--primary-strong);
+            }
+
+            :root:not([data-theme="dark"]) .stat-card .stat-icon {
+                border-color: rgba(47, 109, 176, 0.1);
+                background: linear-gradient(145deg, #e7f2ff, #eff8ff);
+                color: var(--primary-strong);
+            }
+
+            :root:not([data-theme="dark"]) .today-chart-bar {
+                background: linear-gradient(180deg, #82c5f0, #2563a8);
+                box-shadow: 0 4px 12px rgba(37, 99, 168, 0.16);
+            }
+
+            :root:not([data-theme="dark"]) .chart-shortcuts a.chart-export {
+                border-color: transparent;
+                background: linear-gradient(135deg, #2563a8, #398bd0);
+                color: #ffffff;
+            }
+
+            :root:not([data-theme="dark"]) .desktop-nav a[aria-current="page"],
+            :root:not([data-theme="dark"]) .mobile-tab.is-active {
+                border-color: rgba(37, 99, 168, 0.12);
+                background: linear-gradient(145deg, #2563a8, #398bd0);
+                color: #ffffff;
+                box-shadow: 0 8px 18px rgba(37, 99, 168, 0.18);
+            }
+
+            :root:not([data-theme="dark"]) .desktop-nav a[aria-current="page"]::after {
+                background: #ffffff;
+            }
+
+            :root:not([data-theme="dark"]) thead th {
+                background: #f1f7ff;
+            }
+
+            :root:not([data-theme="dark"]) tbody tr:hover {
+                background: rgba(42, 125, 191, 0.06);
+            }
+
+            :root:not([data-theme="dark"]) .comparison-value.is-up {
+                color: #347fc1;
+            }
         </style>
     </head>
     <body>
@@ -2668,6 +2829,19 @@
                     <span class="label">Total Porsi</span>
                     <div class="value">{{ $totalPorsi }}</div>
                     <span class="date">{{ \Carbon\Carbon::parse($selectedDate)->translatedFormat('d F Y') }}</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
+                    </span>
+                    <span class="label">Perubahan Porsi</span>
+                    <span class="comparison-value {{ $porsiChange > 0 ? 'is-up' : ($porsiChange < 0 ? 'is-down' : 'is-even') }}">
+                        {{ $porsiChange > 0 ? '+' : '' }}{{ $porsiChange }}
+                    </span>
+                    <span class="comparison-detail">
+                        {{ $penerimaChange > 0 ? '+' : '' }}{{ $penerimaChange }} penerima dibanding
+                        {{ \Carbon\Carbon::parse($previousDate)->translatedFormat('d F Y') }}
+                    </span>
                 </div>
                 <section class="today-chart" aria-labelledby="today-chart-title">
                     <div class="today-chart-header">

@@ -161,6 +161,40 @@ class MbgRecordTest extends TestCase
             ->assertSee('25 September 2026');
     }
 
+    public function test_dashboard_compares_selected_day_with_the_previous_day(): void
+    {
+        MbgRecord::create([
+            'nama' => 'Penerima Sebelumnya',
+            'kelas' => 'VII-A',
+            'jumlah' => 3,
+            'waktu_pengambilan' => '2026-09-24 08:15:00',
+        ]);
+        MbgRecord::create([
+            'nama' => 'Penerima Hari Ini',
+            'kelas' => 'VII-A',
+            'jumlah' => 5,
+            'waktu_pengambilan' => '2026-09-25 08:15:00',
+        ]);
+        MbgRecord::create([
+            'nama' => 'Penerima Hari Ini Lain',
+            'kelas' => 'VII-B',
+            'jumlah' => 2,
+            'waktu_pengambilan' => '2026-09-25 09:15:00',
+        ]);
+
+        $response = $this->get(route('mbg.index', ['date' => '2026-09-25']));
+
+        $response
+            ->assertOk()
+            ->assertSee('Perubahan Porsi')
+            ->assertSee('+4');
+
+        $this->assertStringContainsString(
+            '+1 penerima dibanding 24 September 2026',
+            preg_replace('/\s+/', ' ', $response->getContent()),
+        );
+    }
+
     public function test_daily_menu_upload_has_its_own_page_and_dashboard_keeps_showing_the_photo(): void
     {
         Storage::fake('public');

@@ -30,6 +30,11 @@ class MbgRecordController extends Controller
         $totalPenerima = $records->count();
         $totalPorsi = $records->sum('jumlah');
         $previousDate = Carbon::parse($selectedDate)->subDay()->toDateString();
+        $previousDayRecords = MbgRecord::whereDate('waktu_pengambilan', $previousDate)->get(['jumlah']);
+        $previousDayPenerima = $previousDayRecords->count();
+        $previousDayPorsi = $previousDayRecords->sum('jumlah');
+        $porsiChange = $totalPorsi - $previousDayPorsi;
+        $penerimaChange = $totalPenerima - $previousDayPenerima;
         $nextDate = Carbon::parse($selectedDate)->addDay()->toDateString();
         $today = now()->toDateString();
         $chartDate = $selectedDate;
@@ -49,6 +54,8 @@ class MbgRecordController extends Controller
             'records',
             'totalPenerima',
             'totalPorsi',
+            'porsiChange',
+            'penerimaChange',
             'selectedDate',
             'previousDate',
             'nextDate',
