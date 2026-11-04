@@ -2699,6 +2699,285 @@
             :root:not([data-theme="dark"]) .comparison-value.is-up {
                 color: #347fc1;
             }
+
+            @media (max-width: 640px) {
+                .page-shell {
+                    width: 100%;
+                    padding: 14px 14px calc(30px + env(safe-area-inset-bottom));
+                }
+
+                .topbar {
+                    display: grid;
+                    grid-template-columns: minmax(0, 1fr);
+                    gap: 12px;
+                    margin-bottom: 14px;
+                    padding: 12px;
+                    border-radius: 18px;
+                }
+
+                .brand {
+                    width: auto;
+                    min-width: 0;
+                    gap: 10px;
+                }
+
+                .brand-mark {
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 12px;
+                }
+
+                .brand-copy strong {
+                    font-size: 0.78rem;
+                }
+
+                .brand-copy span {
+                    font-size: 0.66rem;
+                }
+
+                .topbar-actions {
+                    display: flex;
+                    width: 100%;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 8px;
+                }
+
+                .theme-toggle {
+                    min-height: 38px;
+                    padding: 7px 10px;
+                    font-size: 0.7rem;
+                }
+
+                .live-indicator {
+                    align-self: auto;
+                    gap: 7px;
+                    padding: 7px 9px;
+                    font-size: 0.66rem;
+                }
+
+                .hero-panel {
+                    margin-bottom: 14px;
+                    padding: 20px 16px;
+                    border-radius: 22px;
+                }
+
+                .hero-copy {
+                    padding: 2px 0;
+                }
+
+                .hero-copy h1 {
+                    margin: 12px 0 10px;
+                    font-size: clamp(1.75rem, 8vw, 2.1rem);
+                    line-height: 1.1;
+                    letter-spacing: -0.045em;
+                }
+
+                .hero-copy p {
+                    font-size: 0.88rem;
+                    line-height: 1.55;
+                }
+
+                .hero-actions {
+                    margin-top: 16px;
+                }
+
+                .primary-btn {
+                    min-height: 48px;
+                    border-radius: 14px;
+                }
+
+                .mobile-tabs {
+                    gap: 5px;
+                    margin-bottom: 14px;
+                    padding: 6px;
+                    border-radius: 16px;
+                }
+
+                .mobile-tab {
+                    min-height: 48px;
+                    padding: 8px 4px;
+                    border-radius: 11px;
+                    font-size: 0.68rem;
+                }
+
+                .stats.mobile-panel.is-active {
+                    gap: 10px;
+                }
+
+                .stat-card {
+                    display: grid;
+                    grid-template-columns: 42px minmax(0, 1fr) auto;
+                    grid-template-areas:
+                        "icon label value"
+                        "icon date date";
+                    align-items: center;
+                    column-gap: 10px;
+                    min-height: 0;
+                    padding: 14px;
+                    border-radius: 18px;
+                }
+
+                .stat-card .stat-icon {
+                    grid-area: icon;
+                    width: 40px;
+                    height: 40px;
+                    margin: 0;
+                    border-radius: 13px;
+                }
+
+                .stat-card .label {
+                    grid-area: label;
+                    align-self: end;
+                    margin: 0;
+                    font-size: 0.68rem;
+                    letter-spacing: 0.08em;
+                }
+
+                .stat-card .value,
+                .stat-card .comparison-value {
+                    grid-area: value;
+                    margin: 0;
+                    font-size: 1.55rem;
+                }
+
+                .stat-card .date,
+                .stat-card .comparison-detail {
+                    grid-area: date;
+                    align-self: start;
+                    margin: 3px 0 0;
+                    font-size: 0.7rem;
+                    line-height: 1.4;
+                }
+
+                .today-chart {
+                    padding: 16px 12px;
+                    border-radius: 20px;
+                }
+
+                .today-chart-header {
+                    flex-direction: column;
+                    gap: 14px;
+                    margin-bottom: 18px;
+                }
+
+                .today-chart-subtitle {
+                    font-size: 0.75rem;
+                    line-height: 1.45;
+                }
+
+                .today-chart-controls {
+                    width: 100%;
+                    align-items: stretch;
+                    gap: 10px;
+                }
+
+                .today-chart-controls .chart-date-filter {
+                    display: grid;
+                    width: 100%;
+                    grid-template-columns: minmax(0, 1fr) auto;
+                    align-items: center;
+                }
+
+                .chart-date-filter label {
+                    grid-column: 1 / -1;
+                }
+
+                .chart-date-filter input {
+                    width: 100%;
+                    min-width: 0;
+                }
+
+                .chart-shortcuts {
+                    display: grid;
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    gap: 7px;
+                }
+
+                .chart-shortcuts a {
+                    min-width: 0;
+                    min-height: 42px;
+                    padding: 8px 6px;
+                    font-size: 0.7rem;
+                    line-height: 1.3;
+                    text-align: center;
+                }
+
+                .today-chart-total {
+                    align-self: flex-start;
+                }
+
+                .today-chart-plot {
+                    height: 150px;
+                }
+
+                .form-card,
+                .table-card {
+                    padding: 18px 14px;
+                    border-radius: 20px;
+                }
+
+                .panel-header {
+                    align-items: flex-start;
+                    flex-direction: column;
+                    gap: 10px;
+                }
+
+                .panel-header h2 {
+                    font-size: 1.2rem;
+                }
+
+                .header-actions {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+
+                .history-tools {
+                    align-items: stretch;
+                    flex-direction: column;
+                    gap: 12px;
+                }
+
+                .history-filter {
+                    display: grid;
+                    width: 100%;
+                    grid-template-columns: minmax(0, 1fr) auto;
+                    align-items: center;
+                }
+
+                .history-filter label {
+                    grid-column: 1 / -1;
+                }
+
+                .history-filter input {
+                    width: 100%;
+                    min-width: 0;
+                }
+
+                .history-nav {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                }
+
+                .history-nav a,
+                .history-nav span {
+                    white-space: normal;
+                    text-align: center;
+                }
+
+                .welcome-card {
+                    width: calc(100% - 32px);
+                    max-width: 430px;
+                    padding: 24px 18px;
+                }
+
+                .welcome-card p {
+                    max-width: 34ch;
+                    margin-inline: auto;
+                    font-size: 0.8rem;
+                    line-height: 1.5;
+                }
+            }
         </style>
     </head>
     <body>
