@@ -29,6 +29,28 @@ In addition, [Laracasts](https://laracasts.com) contains thousands of video tuto
 
 You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
 
+## MBG Tracker Petugas
+
+Petugas dapat membuat akun melalui `/register` sebelum masuk melalui `/login`. Pendaftaran memerlukan nama, email unik, dan kata sandi minimal 8 karakter yang harus dikonfirmasi. Setelah mendaftar, masuk menggunakan email dan kata sandi tersebut.
+
+Kata sandi akan di-hash otomatis oleh model pengguna.
+
+### Pengelolaan akun admin
+
+Setelah migrasi, tentukan akun admin secara manual melalui Tinker. Ganti alamat email dengan email akun yang sudah terdaftar:
+
+```bash
+php artisan tinker
+```
+
+```php
+\Illuminate\Support\Facades\DB::table('users')
+    ->where('email', 'admin@contoh.id')
+    ->update(['is_admin' => true]);
+```
+
+Admin masuk seperti biasa melalui `/login`. Setelah masuk, tautan kecil **Admin** akan muncul di dashboard MBG untuk membuka `/admin/users`. Hanya akun admin yang dapat mengelola akun. Akun admin terakhir dan akun yang sedang digunakan tidak dapat dihapus.
+
 ## Agentic Development
 
 Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:

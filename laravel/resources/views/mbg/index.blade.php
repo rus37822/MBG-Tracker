@@ -267,6 +267,33 @@
                 box-shadow: 0 8px 18px rgba(15, 31, 47, 0.12);
             }
 
+            .logout-button {
+                min-height: 38px;
+                padding: 7px 12px;
+                border: 1px solid var(--line);
+                border-radius: 999px;
+                background: rgba(255,255,255,0.45);
+                color: var(--text);
+                font: inherit;
+                font-size: 0.76rem;
+                font-weight: 700;
+                cursor: pointer;
+            }
+
+            .admin-entry {
+                color: var(--muted);
+                font-size: 0.72rem;
+                text-decoration: none;
+                opacity: 0.72;
+            }
+
+            .admin-entry:hover,
+            .admin-entry:focus-visible {
+                color: var(--primary-strong);
+                opacity: 1;
+                text-decoration: underline;
+            }
+
             .theme-toggle-icon {
                 position: relative;
                 display: inline-flex;
@@ -305,6 +332,10 @@
             :root[data-theme="dark"] .mobile-tabs,
             :root[data-theme="dark"] .brand-mark,
             :root[data-theme="dark"] .theme-toggle {
+                background: var(--panel);
+            }
+
+            :root[data-theme="dark"] .logout-button {
                 background: var(--panel);
             }
 
@@ -3034,6 +3065,13 @@
                         <span>Siap dicatat</span>
                         <time id="dashboard-clock" aria-label="Waktu WIB">{{ \Carbon\Carbon::now('Asia/Jakarta')->format('H:i:s') }} WIB</time>
                     </div>
+                    @can('manage-users')
+                        <a class="admin-entry" href="{{ route('admin.users.index') }}">Admin</a>
+                    @endcan
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button class="logout-button" type="submit">Keluar</button>
+                    </form>
                 </div>
             </header>
 

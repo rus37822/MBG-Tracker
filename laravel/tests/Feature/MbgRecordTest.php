@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\DailyMenu;
 use App\Models\MbgRecord;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
@@ -13,6 +14,13 @@ use Tests\TestCase;
 class MbgRecordTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->actingAs(User::factory()->create());
+    }
 
     public function test_home_page_shows_mbg_dashboard(): void
     {
