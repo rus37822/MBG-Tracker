@@ -55,7 +55,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('mbg.index'));
+        return redirect()->intended(route('mbg.form'));
     }
 
     public function storeAdminLogin(Request $request): RedirectResponse
@@ -83,6 +83,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('home');
     }
 }

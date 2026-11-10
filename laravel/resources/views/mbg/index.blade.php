@@ -3225,9 +3225,11 @@
                             <div class="daily-menu-empty">Foto menu hari ini belum diunggah.</div>
                         @endif
 
-                        <a href="{{ route('mbg.daily-menu') }}" class="daily-menu-upload-link">
-                            {{ $dailyMenu ? 'Ganti foto menu' : 'Unggah foto menu' }}
-                        </a>
+                        @can('manage-users')
+                            <a href="{{ route('mbg.daily-menu') }}" class="daily-menu-upload-link">
+                                {{ $dailyMenu ? 'Ganti foto menu' : 'Unggah foto menu' }}
+                            </a>
+                        @endcan
                     </section>
 
                     <div id="form-feedback" class="alert" role="status" aria-live="polite" hidden></div>

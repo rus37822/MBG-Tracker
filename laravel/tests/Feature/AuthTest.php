@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\DailyMenu;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -53,7 +55,7 @@ class AuthTest extends TestCase
         $this->post(route('login.store'), [
             'email' => 'petugas-baru@example.com',
             'password' => 'kata-sandi-aman',
-        ])->assertRedirect(route('mbg.index'));
+        ])->assertRedirect(route('mbg.form'));
 
         $this->assertAuthenticatedAs($user);
     }
@@ -94,6 +96,41 @@ class AuthTest extends TestCase
         $this->assertDatabaseCount('mbg_records', 0);
     }
 
+    public function test_public_home_shows_todays_menu_without_login(): void
+    {
+        Storage::fake('public');
+        $today = now()->toDateString();
+        Storage::disk('public')->put('daily-menus/menu.png', 'menu photo');
+        $dailyMenu = DailyMenu::create([
+            'menu_date' => $today,
+            'foto' => 'daily-menus/menu.png',
+        ]);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('Menu MBG')
+            ->assertSee('Informasi menu untuk semua')
+            ->assertSee(now()->locale('id')->translatedFormat('l, d F Y'))
+            ->assertSee('Login petugas')
+            ->assertSee('class="login-link" href="/login"', false)
+            ->assertSee('class="footer-login" href="/login"', false)
+            ->assertSee(Storage::disk('public')->url($dailyMenu->foto), false);
+
+        $this->assertGuest();
+    }
+
+    public function test_staff_cannot_manage_the_public_daily_menu(): void
+    {
+        $staff = User::factory()->create();
+
+        $this->actingAs($staff)
+            ->get(route('mbg.daily-menu'))
+            ->assertForbidden();
+
+        $this->post(route('mbg.daily-menu.store'), [])
+            ->assertForbidden();
+    }
+
     public function test_staff_can_sign_in_and_are_redirected_to_the_requested_page(): void
     {
         $staff = User::factory()->create([
@@ -112,6 +149,26 @@ class AuthTest extends TestCase
 
         $this->assertAuthenticatedAs($staff);
         $this->get(route('mbg.history'))->assertOk();
+    }
+
+    public function test_staff_login_from_the_public_home_opens_the_recording_form(): void
+    {
+        $staff = User::factory()->create([
+            'email' => 'petugas@example.com',
+            'password' => 'rahasia-petugas',
+        ]);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('class="footer-login" href="/login"', false);
+
+        $this->post(route('login.store'), [
+            'email' => $staff->email,
+            'password' => 'rahasia-petugas',
+        ])->assertRedirect(route('mbg.form'));
+
+        $this->assertAuthenticatedAs($staff);
+        $this->get(route('mbg.form'))->assertOk()->assertSee('Catat Pengambilan');
     }
 
     public function test_invalid_credentials_do_not_sign_in_and_show_an_error(): void
@@ -137,9 +194,10 @@ class AuthTest extends TestCase
         $this->actingAs(User::factory()->create());
 
         $this->post(route('logout'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('home'));
 
         $this->assertGuest();
         $this->get(route('mbg.index'))->assertRedirect(route('login'));
+        $this->get(route('home'))->assertOk()->assertSee('Menu MBG');
     }
 }

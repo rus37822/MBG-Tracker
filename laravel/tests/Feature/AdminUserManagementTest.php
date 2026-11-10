@@ -85,7 +85,8 @@ class AdminUserManagementTest extends TestCase
             ->assertOk()
             ->assertSee('Kelola akun')
             ->assertSee('Petugas Demo')
-            ->assertSee(route('admin.users.edit', $user), false);
+            ->assertSee(route('admin.users.edit', $user), false)
+            ->assertSee(route('mbg.daily-menu'), false);
 
         $this->get(route('admin.users.edit', $user))
             ->assertOk()

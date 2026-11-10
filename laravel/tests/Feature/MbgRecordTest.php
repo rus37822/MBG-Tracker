@@ -32,7 +32,7 @@ class MbgRecordTest extends TestCase
             ->assertSee('capture="environment"', false)
             ->assertSee('Ambil foto langsung dari kamera')
             ->assertDontSee('Pilih foto dari album')
-            ->assertSee(route('mbg.daily-menu'), false)
+            ->assertDontSee(route('mbg.daily-menu'), false)
             ->assertSee('Makanan Bergizi Gratis');
     }
 
@@ -108,6 +108,23 @@ class MbgRecordTest extends TestCase
             ->assertSee('data-count="2"', false)
             ->assertSee('>2 data</span>', false)
             ->assertSee('data-hour="09"', false);
+    }
+
+    public function test_history_defaults_to_the_current_date_in_jakarta_timezone(): void
+    {
+        $this->travelTo(Carbon::parse('2026-11-08 20:30:00', 'UTC'));
+
+        MbgRecord::create([
+            'nama' => 'Penerima Setelah Tengah Malam',
+            'kelas' => 'VII-A',
+            'jumlah' => 1,
+            'waktu_pengambilan' => '2026-11-09 00:15:00',
+        ]);
+
+        $this->get(route('mbg.history'))
+            ->assertOk()
+            ->assertSee('value="2026-11-09"', false)
+            ->assertSee('Penerima Setelah Tengah Malam');
     }
 
     public function test_dashboard_chart_can_show_saved_records_for_a_selected_day(): void
@@ -205,6 +222,7 @@ class MbgRecordTest extends TestCase
 
     public function test_daily_menu_upload_has_its_own_page_and_dashboard_keeps_showing_the_photo(): void
     {
+        $this->signInAsAdmin();
         Storage::fake('public');
         Storage::disk('public')->put('daily-menus/menu.png', 'menu photo');
         $dailyMenu = DailyMenu::create([
@@ -231,8 +249,9 @@ class MbgRecordTest extends TestCase
             ->assertDontSee('name="foto_menu"', false);
     }
 
-    public function test_user_can_upload_and_replace_today_menu_photo(): void
+    public function test_admin_can_upload_and_replace_today_menu_photo(): void
     {
+        $this->signInAsAdmin();
         Storage::fake('public');
         $today = now()->toDateString();
         $photoContents = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=');
@@ -266,8 +285,9 @@ class MbgRecordTest extends TestCase
             ->assertSee('Foto menu MBG hari ini');
     }
 
-    public function test_user_can_delete_today_menu_photo(): void
+    public function test_admin_can_delete_today_menu_photo(): void
     {
+        $this->signInAsAdmin();
         Storage::fake('public');
         $photo = 'daily-menus/menu.png';
         Storage::disk('public')->put($photo, 'menu photo');
@@ -289,8 +309,9 @@ class MbgRecordTest extends TestCase
             ->assertDontSee('Hapus Foto Menu');
     }
 
-    public function test_user_can_upload_today_menu_photo_taken_with_the_camera(): void
+    public function test_admin_can_upload_today_menu_photo_taken_with_the_camera(): void
     {
+        $this->signInAsAdmin();
         Storage::fake('public');
         $photoContents = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=');
 
@@ -304,6 +325,7 @@ class MbgRecordTest extends TestCase
 
     public function test_daily_menu_upload_rejects_non_image_files(): void
     {
+        $this->signInAsAdmin();
         Storage::fake('public');
 
         $this->from(route('mbg.daily-menu'))->post(route('mbg.daily-menu.store'), [
@@ -478,5 +500,12 @@ class MbgRecordTest extends TestCase
 
         $response->assertRedirect(route('mbg.history', ['date' => '2026-09-25']));
         $this->assertDatabaseMissing('mbg_records', ['id' => $record->id]);
+    }
+
+    private function signInAsAdmin(): void
+    {
+        $admin = User::factory()->create();
+        $admin->forceFill(['is_admin' => true])->save();
+        $this->actingAs($admin);
     }
 }

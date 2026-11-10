@@ -13,6 +13,15 @@ use Illuminate\View\View;
 
 class MbgRecordController extends Controller
 {
+    public function publicHome(): View
+    {
+        $today = now()->toDateString();
+        $todayLabel = Carbon::parse($today)->locale('id')->translatedFormat('l, d F Y');
+        $dailyMenu = DailyMenu::whereDate('menu_date', $today)->first();
+
+        return view('mbg.public-home', compact('dailyMenu', 'today', 'todayLabel'));
+    }
+
     public function index(Request $request, string $page = 'summary'): View
     {
         abort_unless(in_array($page, ['summary', 'form', 'history'], true), 404);
