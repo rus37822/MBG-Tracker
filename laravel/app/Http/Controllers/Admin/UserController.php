@@ -4,20 +4,63 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+        ]);
+        $search = trim($validated['search'] ?? '');
+        $usersQuery = User::query();
+
+        if ($search !== '') {
+            $usersQuery->where(function (Builder $query) use ($search): void {
+                $query->where('name', 'like', '%'.$search.'%')
+                    ->orWhere('email', 'like', '%'.$search.'%');
+            });
+        }
+
         return view('admin.users.index', [
-            'users' => User::query()
+            'users' => $usersQuery
+                ->orderBy('is_approved')
                 ->orderByDesc('is_admin')
                 ->orderBy('name')
-                ->paginate(15),
+                ->paginate(15)
+                ->withQueryString(),
+            'search' => $search,
+            'totalUsersCount' => User::query()->count(),
+            'pendingUsersCount' => User::query()
+                ->where('is_admin', false)
+                ->where('is_approved', false)
+                ->count(),
         ]);
+    }
+
+    public function approve(User $user): RedirectResponse
+    {
+        if ($user->is_admin) {
+            return back()->withErrors([
+                'account' => 'Akun admin tidak memerlukan verifikasi.',
+            ]);
+        }
+
+        if ($user->is_approved) {
+            return back()->withErrors([
+                'account' => 'Akun ini sudah diverifikasi.',
+            ]);
+        }
+
+        $user->forceFill(['is_approved' => true])->save();
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('status', 'Akun '.$user->name.' berhasil diverifikasi.');
     }
 
     public function edit(User $user): View

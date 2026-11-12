@@ -3,22 +3,23 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#edf8ff">
+        <meta name="theme-color" content="#e7edf1">
         <title>Kelola Akun - MBG Tracker</title>
+        @include('partials.redirect-on-refresh')
         <style>
             :root {
                 color-scheme: light;
-                --bg: #edf8ff;
-                --panel: rgba(255,255,255,0.88);
-                --panel-solid: #ffffff;
-                --text: #15324d;
-                --muted: #526a82;
-                --line: rgba(47,126,209,0.16);
+                --bg: #e7edf1;
+                --panel: rgba(248,250,251,0.92);
+                --panel-solid: #f8fafb;
+                --text: #1d3447;
+                --muted: #536879;
+                --line: rgba(48,83,108,0.16);
                 --primary: #2f7ed1;
                 --danger: #b42318;
                 --success: #176b43;
-                --soft-blue: rgba(47,126,209,0.08);
-                --shadow: 0 20px 55px rgba(39,84,138,0.1);
+                --soft-blue: rgba(48,83,108,0.08);
+                --shadow: 0 20px 55px rgba(39,65,84,0.1);
             }
 
             :root[data-theme="dark"] {
@@ -43,9 +44,9 @@
                 margin: 0;
                 padding: 34px 20px 56px;
                 background:
-                    radial-gradient(circle at 8% 0%, rgba(142,202,252,0.3), transparent 25%),
-                    radial-gradient(circle at 95% 90%, rgba(168,215,255,0.2), transparent 28%),
-                    linear-gradient(135deg, var(--bg), #f9fcff);
+                    radial-gradient(circle at 8% 0%, rgba(112,157,184,0.16), transparent 25%),
+                    radial-gradient(circle at 95% 90%, rgba(133,166,188,0.12), transparent 28%),
+                    linear-gradient(135deg, var(--bg), #eef2f4);
                 color: var(--text);
                 font-family: "Segoe UI", Arial, sans-serif;
             }
@@ -86,7 +87,7 @@
                 padding: 4px;
                 border: 1px solid var(--line);
                 border-radius: 14px;
-                background: #fff;
+                background: #f8fafb;
                 object-fit: contain;
             }
 
@@ -258,6 +259,46 @@
             .panel-heading h2 { margin: 0; font-size: 1.05rem; letter-spacing: -0.02em; }
             .panel-heading p { margin: 5px 0 0; color: var(--muted); font-size: 0.82rem; }
             .record-count { color: var(--muted); font-size: 0.78rem; white-space: nowrap; }
+            .user-search {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 18px 24px;
+                border-bottom: 1px solid var(--line);
+            }
+            .user-search input {
+                width: min(100%, 420px);
+                min-height: 42px;
+                padding: 9px 13px;
+                border: 1px solid var(--line);
+                border-radius: 11px;
+                background: var(--panel-solid);
+                color: var(--text);
+                font: inherit;
+            }
+            .user-search input:focus-visible,
+            .search-button:focus-visible,
+            .clear-search:focus-visible {
+                outline: 3px solid rgba(47,126,209,0.32);
+                outline-offset: 2px;
+            }
+            .search-button,
+            .clear-search {
+                display: inline-flex;
+                min-height: 40px;
+                align-items: center;
+                justify-content: center;
+                padding: 8px 13px;
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                background: var(--panel-solid);
+                color: var(--primary);
+                font: inherit;
+                font-size: 0.8rem;
+                font-weight: 750;
+                text-decoration: none;
+                cursor: pointer;
+            }
 
             .notice, .error {
                 margin: 18px 24px 0;
@@ -286,7 +327,7 @@
                 place-items: center;
                 border: 1px solid var(--line);
                 border-radius: 13px;
-                background: linear-gradient(145deg, var(--soft-blue), rgba(142,202,252,0.24));
+                background: linear-gradient(145deg, var(--soft-blue), rgba(112,157,184,0.16));
                 color: var(--primary);
                 font-size: 0.83rem;
                 font-weight: 800;
@@ -311,11 +352,14 @@
 
             .role.admin { color: var(--primary); }
             .role::before { width: 6px; height: 6px; border-radius: 50%; background: currentColor; content: ""; }
+            .role.pending { color: #9a5b00; }
+            :root[data-theme="dark"] .role.pending { color: #ffd27a; }
             .actions { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
             .actions form { margin: 0; }
 
             .edit-link,
-            .delete-button {
+            .delete-button,
+            .approve-button {
                 display: inline-flex;
                 min-height: 34px;
                 align-items: center;
@@ -334,9 +378,11 @@
 
             .edit-link { color: var(--primary); }
             .delete-button { color: var(--danger); }
-            .edit-link:hover, .delete-button:hover { transform: translateY(-1px); }
+            .approve-button { border-color: rgba(23,107,67,0.24); color: var(--success); }
+            .edit-link:hover, .delete-button:hover, .approve-button:hover { transform: translateY(-1px); }
             .edit-link:hover { border-color: var(--primary); }
             .delete-button:hover { border-color: var(--danger); }
+            .approve-button:hover { border-color: var(--success); }
             .empty-state { padding: 34px 20px; color: var(--muted); text-align: center; }
             .pagination { padding: 18px 24px; border-top: 1px solid var(--line); }
             .pagination nav { display: flex; justify-content: space-between; gap: 12px; }
@@ -362,6 +408,8 @@
                 .panel-heading { align-items: flex-start; padding: 18px 16px; }
                 .panel-heading p { max-width: 35ch; line-height: 1.5; }
                 .record-count { padding-top: 2px; font-size: 0.7rem; }
+                .user-search { flex-wrap: wrap; padding: 16px; }
+                .user-search input { flex: 1 1 100%; }
                 th, td { padding: 13px 14px; }
                 th:last-child, td:last-child { padding-right: 16px; }
                 .pagination { padding: 16px; }
@@ -421,7 +469,7 @@
                     </span>
                     <div>
                         <span>Total akun terdaftar</span>
-                        <strong>{{ number_format($users->total(), 0, ',', '.') }}</strong>
+                        <strong>{{ number_format($totalUsersCount, 0, ',', '.') }}</strong>
                     </div>
                 </article>
                 <article class="summary-card">
@@ -429,8 +477,8 @@
                         <svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 4.5-3 7.5-7 10-4-2.5-7-5.5-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg>
                     </span>
                     <div>
-                        <span>Akun pada halaman ini</span>
-                        <strong>{{ number_format($users->count(), 0, ',', '.') }}</strong>
+                        <span>Menunggu verifikasi</span>
+                        <strong>{{ number_format($pendingUsersCount, 0, ',', '.') }}</strong>
                     </div>
                 </article>
             </section>
@@ -439,10 +487,23 @@
                 <div class="panel-heading">
                     <div>
                         <h2>Daftar pengguna</h2>
-                        <p>Perbarui informasi atau kelola akses akun.</p>
+                        <p>Verifikasi pendaftaran baru atau perbarui akses akun.</p>
                     </div>
                     <span class="record-count">Menampilkan {{ $users->count() }} dari {{ $users->total() }} akun</span>
                 </div>
+                <form class="user-search" method="GET" action="{{ route('admin.users.index') }}" role="search">
+                    <input
+                        type="search"
+                        name="search"
+                        value="{{ $search }}"
+                        placeholder="Cari nama atau email pengguna"
+                        aria-label="Cari nama atau email pengguna"
+                    >
+                    <button class="search-button" type="submit">Cari</button>
+                    @if ($search !== '')
+                        <a class="clear-search" href="{{ route('admin.users.index') }}">Hapus pencarian</a>
+                    @endif
+                </form>
                 @if (session('status'))
                     <p class="notice" role="status">{{ session('status') }}</p>
                 @endif
@@ -456,6 +517,7 @@
                             <tr>
                                 <th>Akun pengguna</th>
                                 <th>Peran</th>
+                                <th>Status</th>
                                 <th>Tindakan</th>
                             </tr>
                         </thead>
@@ -471,9 +533,21 @@
                                             </span>
                                         </div>
                                     </td>
-                                    <td><span class="role {{ $user->is_admin ? 'admin' : '' }}">{{ $user->is_admin ? 'Admin' : 'Pengguna' }}</span></td>
+                                    <td><span class="role {{ $user->is_admin ? 'admin' : '' }}">{{ $user->is_admin ? 'Admin' : 'Petugas' }}</span></td>
+                                    <td>
+                                        <span class="role {{ $user->is_approved ? '' : 'pending' }}">
+                                            {{ $user->is_approved ? 'Terverifikasi' : 'Menunggu verifikasi' }}
+                                        </span>
+                                    </td>
                                     <td>
                                         <div class="actions">
+                                            @if (! $user->is_admin && ! $user->is_approved)
+                                                <form method="POST" action="{{ route('admin.users.approve', $user) }}">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button class="approve-button" type="submit">Verifikasi</button>
+                                                </form>
+                                            @endif
                                             <a class="edit-link" href="{{ route('admin.users.edit', $user) }}">Ubah</a>
                                             @if (! auth()->user()->is($user))
                                                 <form method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Hapus akun {{ $user->name }}?')">
@@ -487,7 +561,9 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="empty-state">Belum ada akun pengguna.</td>
+                                    <td colspan="4" class="empty-state">
+                                        {{ $search !== '' ? 'Tidak ada pengguna yang cocok dengan pencarian.' : 'Belum ada akun pengguna.' }}
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>

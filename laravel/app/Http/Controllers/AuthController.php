@@ -33,11 +33,13 @@ class AuthController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        User::create($validated);
+        $user = new User($validated);
+        $user->is_approved = false;
+        $user->save();
 
         return redirect()
             ->route('login')
-            ->with('status', 'Pendaftaran berhasil. Silakan masuk dengan akun Anda.');
+            ->with('status', 'Pendaftaran berhasil. Akun Anda menunggu verifikasi admin sebelum dapat digunakan.');
     }
 
     public function store(Request $request): RedirectResponse
@@ -47,7 +49,15 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (! Auth::attempt($credentials + ['is_approved' => true], $request->boolean('remember'))) {
+            $user = User::where('email', $credentials['email'])->first();
+
+            if ($user && ! $user->is_approved && Auth::validate($credentials)) {
+                return back()
+                    ->withErrors(['email' => 'Akun Anda masih menunggu verifikasi admin.'])
+                    ->onlyInput('email');
+            }
+
             return back()
                 ->withErrors(['email' => 'Email atau kata sandi yang Anda masukkan tidak sesuai.'])
                 ->onlyInput('email');
@@ -65,7 +75,7 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt($credentials + ['is_admin' => true], $request->boolean('remember'))) {
+        if (! Auth::attempt($credentials + ['is_admin' => true, 'is_approved' => true], $request->boolean('remember'))) {
             return back()
                 ->withErrors(['email' => 'Email atau kata sandi admin tidak sesuai.'])
                 ->onlyInput('email');
@@ -83,6 +93,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home');
+        return redirect()->route('login');
     }
 }

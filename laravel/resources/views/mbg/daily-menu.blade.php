@@ -4,14 +4,15 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Unggah Foto Menu Hari Ini - Pendataan MBG</title>
+        @include('partials.redirect-on-refresh')
         <style>
             :root {
                 color-scheme: light;
-                --background: #edf8ff;
-                --panel: rgba(255, 255, 255, 0.88);
-                --text: #15324d;
-                --muted: #526a82;
-                --line: rgba(47, 126, 209, 0.16);
+                --background: #e7edf1;
+                --panel: rgba(248, 250, 251, 0.92);
+                --text: #1d3447;
+                --muted: #536879;
+                --line: rgba(48, 83, 108, 0.16);
                 --primary: #2f7ed1;
                 --error: #b42318;
             }
@@ -25,8 +26,8 @@
                 padding: 32px 20px;
                 place-items: center;
                 background:
-                    radial-gradient(circle at top left, rgba(142, 202, 252, 0.4), transparent 30%),
-                    linear-gradient(135deg, var(--background), #f9fcff 70%);
+                    radial-gradient(circle at top left, rgba(112, 157, 184, 0.18), transparent 30%),
+                    linear-gradient(135deg, var(--background), #eef2f4 70%);
                 color: var(--text);
                 font-family: "Segoe UI", Arial, sans-serif;
             }
@@ -78,7 +79,7 @@
                 margin-bottom: 22px;
                 aspect-ratio: 16 / 9;
                 border-radius: 14px;
-                background: #f5faff;
+                background: #e9eff2;
                 object-fit: cover;
             }
 
@@ -117,7 +118,7 @@
                 padding: 12px;
                 border: 1px solid var(--line);
                 border-radius: 12px;
-                background: #f8fbff;
+                background: #f2f6f8;
                 color: var(--text);
                 font: inherit;
             }

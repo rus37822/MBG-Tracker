@@ -3,16 +3,17 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#edf8ff">
+        <meta name="theme-color" content="#e7edf1">
         <title>Ubah Akun - MBG Tracker</title>
+        @include('partials.redirect-on-refresh')
         <style>
             :root {
                 color-scheme: light;
-                --bg: #edf8ff;
-                --panel: rgba(255,255,255,0.9);
-                --text: #15324d;
-                --muted: #526a82;
-                --line: rgba(47,126,209,0.16);
+                --bg: #e7edf1;
+                --panel: rgba(248,250,251,0.92);
+                --text: #1d3447;
+                --muted: #536879;
+                --line: rgba(48,83,108,0.16);
                 --primary: #2f7ed1;
                 --error: #b42318;
             }
@@ -36,7 +37,7 @@
                 margin: 0;
                 padding: 28px 18px;
                 place-items: center;
-                background: linear-gradient(135deg, var(--bg), #f9fcff);
+                background: linear-gradient(135deg, var(--bg), #eef2f4);
                 color: var(--text);
                 font-family: "Segoe UI", Arial, sans-serif;
             }

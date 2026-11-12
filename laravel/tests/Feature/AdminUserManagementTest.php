@@ -60,6 +60,9 @@ class AdminUserManagementTest extends TestCase
             ->get(route('admin.users.index'))
             ->assertForbidden();
 
+        $this->patch(route('admin.users.approve', $otherUser))
+            ->assertForbidden();
+
         $this->put(route('admin.users.update', $otherUser), [
             'name' => 'Nama Diubah',
             'email' => $otherUser->email,
@@ -78,13 +81,20 @@ class AdminUserManagementTest extends TestCase
     {
         $admin = User::factory()->create();
         $admin->forceFill(['is_admin' => true])->save();
-        $user = User::factory()->create(['name' => 'Petugas Demo']);
+        $user = User::factory()->create([
+            'name' => 'Petugas Demo',
+            'is_approved' => false,
+        ]);
 
         $this->actingAs($admin)
             ->get(route('admin.users.index'))
             ->assertOk()
             ->assertSee('Kelola akun')
             ->assertSee('Petugas Demo')
+            ->assertSee('Menunggu verifikasi')
+            ->assertSee(route('admin.users.approve', $user), false)
+            ->assertSee('/mbg/form', false)
+            ->assertSee('/admin/users', false)
             ->assertSee(route('admin.users.edit', $user), false)
             ->assertSee(route('mbg.daily-menu'), false);
 
@@ -95,6 +105,55 @@ class AdminUserManagementTest extends TestCase
 
         $this->get(route('mbg.index'))
             ->assertSee(route('admin.users.index'), false);
+    }
+
+    public function test_admin_can_search_users_by_name_or_email(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $nameMatch = User::factory()->create([
+            'name' => 'Petugas Pencarian',
+            'email' => 'petugas@example.com',
+        ]);
+        $emailMatch = User::factory()->create([
+            'name' => 'Staf Lain',
+            'email' => 'pencarian@example.com',
+        ]);
+        User::factory()->create([
+            'name' => 'Tidak Cocok',
+            'email' => 'other@example.com',
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.users.index', ['search' => 'pencarian']))
+            ->assertOk()
+            ->assertSee('Petugas Pencarian')
+            ->assertSee('pencarian@example.com')
+            ->assertDontSee('Tidak Cocok')
+            ->assertSee('name="search"', false)
+            ->assertSee('value="pencarian"', false)
+            ->assertSee('Hapus pencarian');
+
+        $this->actingAs($admin)
+            ->get(route('admin.users.index', ['search' => 'petugas@example.com']))
+            ->assertOk()
+            ->assertSee('Petugas Pencarian')
+            ->assertDontSee('Staf Lain');
+    }
+
+    public function test_admin_can_approve_a_pending_staff_account(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $user = User::factory()->create(['is_approved' => false]);
+
+        $this->actingAs($admin)
+            ->patch(route('admin.users.approve', $user))
+            ->assertRedirect(route('admin.users.index'))
+            ->assertSessionHas('status', 'Akun '.$user->name.' berhasil diverifikasi.');
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'is_approved' => true,
+        ]);
     }
 
     public function test_admin_can_update_account_and_optionally_reset_password(): void

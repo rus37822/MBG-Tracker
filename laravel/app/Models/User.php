@@ -19,6 +19,7 @@ class User extends Authenticatable
 
     protected $attributes = [
         'is_admin' => false,
+        'is_approved' => true,
     ];
 
     /**
@@ -31,6 +32,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'is_admin' => 'boolean',
+            'is_approved' => 'boolean',
             'password' => 'hashed',
         ];
     }

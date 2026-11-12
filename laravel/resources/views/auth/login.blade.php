@@ -3,19 +3,20 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#edf8ff">
+        <meta name="theme-color" content="#e7edf1">
         <title>{{ ($adminLogin ?? false) ? 'Masuk Admin' : 'Masuk Petugas' }} - MBG Tracker</title>
+        @include('partials.redirect-on-refresh')
         <style>
             :root {
                 color-scheme: light;
-                --bg-1: #edf8ff;
-                --bg-2: #f9fcff;
-                --panel: rgba(255,255,255,0.88);
-                --text: #15324d;
-                --muted: #526a82;
-                --line: rgba(47,126,209,0.14);
+                --bg-1: #e7edf1;
+                --bg-2: #eef2f4;
+                --panel: rgba(248,250,251,0.92);
+                --text: #1d3447;
+                --muted: #536879;
+                --line: rgba(48,83,108,0.16);
                 --primary: #2f7ed1;
-                --input-bg: rgba(245,250,255,0.96);
+                --input-bg: rgba(242,246,248,0.96);
                 --error: #b42318;
                 --focus: rgba(47,126,209,0.2);
             }
@@ -44,8 +45,8 @@
                 place-items: center;
                 overflow-x: hidden;
                 background:
-                    radial-gradient(circle at 12% 12%, rgba(142,202,252,0.42), transparent 28%),
-                    radial-gradient(circle at 88% 86%, rgba(168,215,255,0.28), transparent 30%),
+                    radial-gradient(circle at 12% 12%, rgba(112,157,184,0.2), transparent 28%),
+                    radial-gradient(circle at 88% 86%, rgba(133,166,188,0.14), transparent 30%),
                     linear-gradient(135deg, var(--bg-1), var(--bg-2) 70%);
                 color: var(--text);
                 font-family: "Segoe UI", Arial, sans-serif;
@@ -219,6 +220,29 @@
                 text-decoration: underline;
             }
 
+            .back-link {
+                display: flex;
+                width: fit-content;
+                min-height: 42px;
+                align-items: center;
+                justify-content: center;
+                margin: 18px auto 0;
+                padding: 0 16px;
+                border: 1px solid var(--line);
+                border-radius: 12px;
+                background: var(--input-bg);
+                color: var(--muted);
+                font-size: 0.86rem;
+                font-weight: 700;
+                text-decoration: none;
+                transition: border-color 0.2s ease, color 0.2s ease;
+            }
+
+            .back-link:hover {
+                border-color: var(--primary);
+                color: var(--primary);
+            }
+
             .admin-login-link {
                 display: block;
                 width: fit-content;
@@ -319,6 +343,7 @@
                     <a class="register-link" href="{{ route('login') }}">Masuk sebagai petugas</a>
                 @else
                     <a class="register-link" href="{{ route('register') }}">Belum punya akun? Daftar</a>
+                    <a class="back-link" href="{{ route('home') }}">Kembali ke halaman utama</a>
                 @endif
             </section>
 

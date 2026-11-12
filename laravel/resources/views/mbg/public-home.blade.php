@@ -3,387 +3,718 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#edf8ff">
+        <meta name="theme-color" content="#e7edf1">
         <title>Menu MBG Hari Ini - MBG Tracker</title>
+        @include('partials.redirect-on-refresh')
         <style>
             :root {
                 color-scheme: light;
-                --bg: #edf8ff;
-                --bg-soft: #f9fcff;
-                --panel: rgba(255,255,255,0.86);
-                --text: #15324d;
-                --muted: #526a82;
-                --line: rgba(47,126,209,0.16);
-                --primary: #2f7ed1;
-                --primary-dark: #1d5e9d;
-                --soft-blue: rgba(47,126,209,0.08);
-                --shadow: 0 24px 60px rgba(39,84,138,0.12);
+                --bg-1: #e7edf1;
+                --bg-2: #eef2f4;
+                --panel: rgba(248,250,251,0.92);
+                --panel-strong: #f8fafb;
+                --primary: #8ecafc;
+                --primary-strong: #2f7ed1;
+                --secondary: #e3ebf0;
+                --accent: #cfdee8;
+                --text: #1d3447;
+                --muted: #536879;
+                --line: rgba(48,83,108,0.14);
+                --shadow: 0 24px 60px rgba(39, 65, 84, 0.12);
+                --input-bg: rgba(242,246,248,0.96);
+                --hero-bg-1: #edf9ff;
+                --hero-bg-2: #cfeaff;
+                --hero-bg-3: #9cc8ff;
+                --hero-bg-4: #eaf7ff;
+                --hero-text: #12314d;
+                --hero-subtext: rgba(18,49,77,0.8);
             }
 
             :root[data-theme="dark"] {
                 color-scheme: dark;
-                --bg: #07141d;
-                --bg-soft: #0d1d2b;
-                --panel: rgba(16,34,50,0.9);
+                --bg-1: #07141d;
+                --bg-2: #0d1d2b;
+                --panel: rgba(15,23,34,0.82);
+                --panel-strong: #102232;
+                --primary: #89d1ff;
+                --primary-strong: #9ad7ff;
+                --secondary: #1d3146;
+                --accent: #244d73;
                 --text: #edf8ff;
                 --muted: #bfd6ef;
-                --line: rgba(154,215,255,0.18);
-                --primary: #9ad7ff;
-                --primary-dark: #153d5e;
-                --soft-blue: rgba(154,215,255,0.1);
-                --shadow: 0 24px 60px rgba(2,7,12,0.36);
+                --line: rgba(154,215,255,0.12);
+                --shadow: 0 24px 60px rgba(2, 7, 12, 0.46);
+                --input-bg: #112433;
+                --hero-bg-1: #0e2339;
+                --hero-bg-2: #153d5e;
+                --hero-bg-3: #1b4c75;
+                --hero-bg-4: #0d2033;
+                --hero-text: #edf7ff;
+                --hero-subtext: rgba(237,247,255,0.8);
             }
 
             * { box-sizing: border-box; }
 
-            html { min-width: 320px; scroll-behavior: smooth; }
-
             body {
                 min-height: 100vh;
                 margin: 0;
-                padding: 22px 20px 130px;
-                overflow-x: hidden;
+                padding: 22px;
                 background:
-                    radial-gradient(circle at 8% 0%, rgba(142,202,252,0.34), transparent 26%),
-                    radial-gradient(circle at 96% 78%, rgba(168,215,255,0.22), transparent 28%),
-                    linear-gradient(135deg, var(--bg), var(--bg-soft) 65%);
+                    radial-gradient(circle at top left, rgba(112, 157, 184, 0.2), transparent 24rem),
+                    radial-gradient(circle at bottom right, rgba(133, 166, 188, 0.14), transparent 30rem),
+                    linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 55%, #e9eff2 100%);
                 color: var(--text);
                 font-family: "Segoe UI", Arial, sans-serif;
             }
 
-            :root[data-theme="dark"] body {
-                background:
-                    radial-gradient(circle at 8% 0%, rgba(34,91,133,0.24), transparent 28%),
-                    radial-gradient(circle at 96% 78%, rgba(31,72,105,0.2), transparent 30%),
-                    linear-gradient(135deg, var(--bg), var(--bg-soft) 65%);
+            .welcome-overlay {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                display: grid;
+                place-items: center;
+                overflow: hidden;
+                background: #12334b;
+                transition: opacity 0.8s ease, visibility 0.8s ease;
             }
 
-            .page { width: min(100%, 1120px); margin: 0 auto; }
+            .welcome-overlay::before {
+                position: absolute;
+                inset: 0;
+                background:
+                    linear-gradient(135deg, rgba(8, 28, 43, 0.68), rgba(14, 51, 73, 0.38) 55%, rgba(8, 28, 43, 0.66)),
+                    url("{{ asset('jpg.foto/foto-prabowo,jpg.png') }}") center 42% / cover no-repeat;
+                animation: welcomeBackdropIn 1.4s ease both;
+                content: "";
+            }
+
+            .welcome-overlay.hidden {
+                opacity: 0;
+                visibility: hidden;
+            }
+
+            .welcome-card {
+                position: relative;
+                z-index: 1;
+                padding: 26px 34px;
+                border: 1px solid rgba(255,255,255,0.28);
+                border-radius: 28px;
+                background: rgba(12, 35, 51, 0.42);
+                box-shadow: 0 25px 80px rgba(0,0,0,0.24);
+                color: white;
+                text-align: center;
+                backdrop-filter: blur(12px);
+                animation: floatIn 1s ease both;
+            }
+
+            .welcome-visual {
+                position: relative;
+                display: flex;
+                width: 96px;
+                height: 96px;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 18px;
+            }
+
+            .welcome-logo {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                display: block;
+                width: 78px;
+                height: 78px;
+                padding: 5px;
+                transform: translate(-50%, -50%) scale(0.25);
+                transform-origin: center center;
+                border: 2px solid rgba(255,255,255,0.95);
+                border-radius: 20px;
+                background: #ffffff;
+                box-shadow: 0 18px 36px rgba(32, 96, 161, 0.2);
+                object-fit: contain;
+                opacity: 0;
+                animation: logoIn 0.7s cubic-bezier(0.2, 0.9, 0.2, 1) forwards 0.45s;
+            }
+
+            .welcome-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 14px;
+                padding: 8px 14px;
+                border: 1px solid rgba(255,255,255,0.18);
+                border-radius: 999px;
+                background: rgba(255,255,255,0.14);
+                font-size: 12px;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+            }
+
+            .welcome-badge::before {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #d6f0ff;
+                box-shadow: 0 0 0 5px rgba(214, 240, 255, 0.28);
+                content: "";
+            }
+
+            .welcome-card h2 {
+                margin: 0;
+                font-size: clamp(2rem, 5vw, 4rem);
+                letter-spacing: -0.06em;
+                animation: revealText 1.2s ease both 0.25s;
+            }
+
+            .welcome-card p {
+                margin: 10px 0 0;
+                font-size: 1rem;
+                letter-spacing: 0.08em;
+                opacity: 0.8;
+                text-transform: uppercase;
+            }
+
+            .mbg-car-track {
+                position: fixed;
+                z-index: 10000;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                height: clamp(76px, 12vh, 120px);
+                overflow: hidden;
+                pointer-events: none;
+            }
+
+            .mbg-car {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: clamp(220px, 34vw, 420px);
+                height: 100%;
+                object-fit: contain;
+                animation: mbg-car-drive 4.5s linear infinite;
+                will-change: transform;
+            }
+
+            @keyframes mbg-car-drive {
+                from { transform: translate3d(-100%, 0, 0); }
+                to { transform: translate3d(100vw, 0, 0); }
+            }
+
+            @keyframes floatIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(18px) scale(0.94);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+
+            @keyframes revealText {
+                from {
+                    opacity: 0;
+                    transform: translateY(18px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes logoIn {
+                0% {
+                    opacity: 0;
+                    transform: translate(-50%, -50%) scale(0.25);
+                }
+                60% {
+                    opacity: 1;
+                    transform: translate(-50%, -50%) scale(1.08);
+                }
+                100% {
+                    opacity: 1;
+                    transform: translate(-50%, -50%) scale(1);
+                }
+            }
+
+            @keyframes welcomeBackdropIn {
+                from {
+                    opacity: 0.7;
+                    transform: scale(1.06);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            .page {
+                width: min(100%, 1120px);
+                margin: 0 auto;
+            }
 
             .topbar {
                 display: flex;
+                min-height: 68px;
                 align-items: center;
                 justify-content: space-between;
-                gap: 18px;
-                margin-bottom: 24px;
-                padding: 12px 16px;
-                border: 1px solid var(--line);
+                gap: 20px;
+                padding: 9px 12px 9px 16px;
+                border: 1px solid rgba(48,83,108,0.12);
                 border-radius: 20px;
                 background: var(--panel);
-                box-shadow: 0 12px 32px rgba(39,84,138,0.07);
-                backdrop-filter: blur(14px);
+                box-shadow: 0 10px 30px rgba(39, 65, 84, 0.08);
+                backdrop-filter: blur(12px);
             }
 
-            .brand { display: flex; min-width: 0; align-items: center; gap: 12px; }
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                color: inherit;
+                text-decoration: none;
+            }
 
             .brand img {
                 width: 46px;
                 height: 46px;
-                padding: 4px;
-                border: 1px solid var(--line);
-                border-radius: 15px;
+                padding: 3px;
+                border: 1px solid rgba(47,126,209,0.08);
+                border-radius: 14px;
                 background: #fff;
                 object-fit: contain;
             }
 
-            .brand-copy strong, .brand-copy span { display: block; }
-            .brand-copy strong { font-size: 0.96rem; letter-spacing: -0.02em; }
-            .brand-copy span { margin-top: 3px; color: var(--muted); font-size: 0.75rem; }
-            .topbar-actions { display: flex; align-items: center; gap: 10px; }
+            .brand-copy strong,
+            .brand-copy span { display: block; }
 
-            .theme-toggle,
+            .brand-copy strong {
+                font-size: 0.98rem;
+                letter-spacing: -0.02em;
+            }
+
+            .brand-copy span {
+                margin-top: 3px;
+                color: var(--muted);
+                font-size: 0.76rem;
+            }
+
             .login-link {
+                display: inline-flex;
+                min-height: 44px;
+                align-items: center;
+                justify-content: center;
+                gap: 9px;
+                padding: 0 17px;
+                border: 1px solid rgba(47,126,209,0.12);
+                border-radius: 13px;
+                background: linear-gradient(135deg, #2f7ed1, #7ec8ff);
+                box-shadow: 0 12px 24px rgba(47,126,209,0.2);
+                color: #fff;
+                font-size: 0.86rem;
+                font-weight: 750;
+                text-decoration: none;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .login-link:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 16px 28px rgba(47,126,209,0.26);
+            }
+
+            .login-link:focus-visible,
+            .brand:focus-visible {
+                outline: 3px solid var(--primary);
+                outline-offset: 3px;
+            }
+
+            .topbar-actions {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .theme-toggle {
                 display: inline-flex;
                 min-height: 42px;
                 align-items: center;
-                justify-content: center;
                 gap: 8px;
-                padding: 9px 14px;
+                padding: 8px 12px;
                 border: 1px solid var(--line);
-                border-radius: 12px;
+                border-radius: 999px;
+                background: rgba(255,255,255,0.45);
+                color: var(--text);
                 font: inherit;
-                font-size: 0.82rem;
-                font-weight: 750;
-                text-decoration: none;
+                font-size: 0.76rem;
+                font-weight: 700;
                 cursor: pointer;
                 transition: transform 0.2s ease, box-shadow 0.2s ease;
             }
 
-            .theme-toggle {
-                background: var(--soft-blue);
-                color: var(--text);
+            .theme-toggle:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 8px 18px rgba(15, 31, 47, 0.12);
             }
 
-            .login-link {
-                border-color: transparent;
-                background: linear-gradient(135deg, #2f7ed1, #58a7ed);
-                color: #fff;
-                box-shadow: 0 8px 18px rgba(47,126,209,0.2);
-            }
-
-            :root[data-theme="dark"] .login-link { color: #0d263b; }
-            .theme-toggle:hover, .login-link:hover { transform: translateY(-2px); box-shadow: 0 12px 22px rgba(47,126,209,0.18); }
-            .theme-toggle svg, .login-link svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
-            .theme-toggle:focus-visible, .login-link:focus-visible, .footer-login:focus-visible { outline: 3px solid rgba(47,126,209,0.34); outline-offset: 3px; }
-
-            .hero {
+            .theme-toggle-icon {
                 position: relative;
-                display: grid;
-                min-height: 290px;
+                display: inline-flex;
+                width: 20px;
+                height: 20px;
                 align-items: center;
-                overflow: hidden;
-                margin-bottom: 22px;
-                padding: clamp(30px, 6vw, 58px);
-                border: 1px solid rgba(255,255,255,0.35);
-                border-radius: 30px;
-                background: linear-gradient(118deg, #174d7d 0%, #2f7ed1 55%, #8ecafc 100%);
-                color: #fff;
-                box-shadow: 0 24px 54px rgba(39,100,159,0.2);
-            }
-
-            .hero::before, .hero::after {
-                position: absolute;
-                border: 1px solid rgba(255,255,255,0.19);
+                justify-content: center;
+                border: 1px solid rgba(17,17,17,0.18);
                 border-radius: 50%;
+                background: rgba(112,157,184,0.12);
+            }
+
+            .theme-toggle-icon::before {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #111;
+                box-shadow: 0 0 0 2px rgba(17,17,17,0.08);
                 content: "";
-                pointer-events: none;
             }
 
-            .hero::before {
-                top: -190px;
-                right: -40px;
-                width: 440px;
-                height: 440px;
-                box-shadow: 0 0 0 35px rgba(255,255,255,0.05), 0 0 0 75px rgba(255,255,255,0.035);
+            :root[data-theme="dark"] .theme-toggle-icon {
+                border-color: rgba(255,255,255,0.18);
+                background: rgba(255,255,255,0.06);
             }
 
-            .hero::after {
-                right: 12%;
-                bottom: -180px;
-                width: 300px;
-                height: 300px;
-                border-color: rgba(255,255,255,0.12);
+            :root[data-theme="dark"] .theme-toggle-icon::before {
+                background: #fff;
+                box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
             }
 
-            .hero-copy { position: relative; z-index: 1; max-width: 690px; }
+            main {
+                padding: clamp(52px, 8vw, 88px) 0 42px;
+                text-align: center;
+            }
 
             .eyebrow {
                 display: inline-flex;
                 align-items: center;
-                gap: 9px;
-                margin-bottom: 18px;
+                gap: 8px;
+                margin: 0 0 17px;
                 padding: 8px 13px;
-                border: 1px solid rgba(255,255,255,0.25);
+                border: 1px solid var(--line);
                 border-radius: 999px;
-                background: rgba(255,255,255,0.14);
-                font-size: 0.72rem;
+                background: var(--panel);
+                color: var(--primary-strong);
+                font-size: 0.73rem;
                 font-weight: 800;
-                letter-spacing: 0.1em;
+                letter-spacing: 0.08em;
                 text-transform: uppercase;
             }
 
-            .eyebrow::before {
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                background: #a9f0cf;
-                box-shadow: 0 0 0 4px rgba(169,240,207,0.16);
-                content: "";
+            .eyebrow svg { width: 16px; height: 16px; }
+
+            h1 {
+                max-width: 760px;
+                margin: 0 auto;
+                font-size: clamp(2.35rem, 6vw, 4.2rem);
+                line-height: 1.06;
+                letter-spacing: -0.065em;
             }
 
-            h1 { margin: 0; font-size: clamp(2.2rem, 6vw, 4.1rem); letter-spacing: -0.055em; line-height: 1.03; }
-            .hero-copy p { max-width: 56ch; margin: 16px 0 0; color: rgba(255,255,255,0.84); font-size: 1.02rem; line-height: 1.7; }
+            h1 span { color: var(--primary-strong); }
 
-            .date-chip {
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-                margin-top: 23px;
-                padding: 10px 14px;
-                border: 1px solid rgba(255,255,255,0.24);
-                border-radius: 13px;
-                background: rgba(255,255,255,0.13);
-                font-size: 0.86rem;
-                font-weight: 700;
+            .intro {
+                max-width: 560px;
+                margin: 18px auto 0;
+                color: var(--muted);
+                font-size: clamp(0.94rem, 2vw, 1.06rem);
+                line-height: 1.7;
             }
 
-            .date-chip svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
-
-            .menu-card {
-                position: relative;
-                z-index: 2;
-                margin: -2px auto 28px;
-                padding: clamp(18px, 4vw, 30px);
-                border: 1px solid var(--line);
-                border-radius: 26px;
-                background: var(--panel);
-                box-shadow: var(--shadow);
-                backdrop-filter: blur(14px);
+            .menu-section {
+                width: min(100%, 880px);
+                margin: 38px auto 0;
+                text-align: left;
             }
 
             .menu-heading {
                 display: flex;
-                align-items: flex-end;
+                align-items: end;
                 justify-content: space-between;
                 gap: 16px;
-                margin-bottom: 18px;
+                margin: 0 5px 13px;
             }
 
-            .menu-kicker { display: block; margin-bottom: 5px; color: var(--primary); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.11em; text-transform: uppercase; }
-            h2 { margin: 0; font-size: clamp(1.35rem, 3vw, 1.8rem); letter-spacing: -0.04em; }
-            .menu-heading p { margin: 6px 0 0; color: var(--muted); font-size: 0.88rem; }
+            .menu-heading p { margin: 0; }
+
+            .menu-label {
+                color: var(--muted);
+                font-size: 0.78rem;
+                font-weight: 750;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+            }
+
+            .date {
+                margin-top: 5px !important;
+                color: var(--text);
+                font-size: 1rem;
+                font-weight: 750;
+            }
 
             .today-badge {
-                flex: 0 0 auto;
-                padding: 8px 11px;
-                border: 1px solid var(--line);
+                display: inline-flex;
+                align-items: center;
+                gap: 7px;
+                padding: 7px 11px;
                 border-radius: 999px;
-                background: var(--soft-blue);
-                color: var(--primary);
-                font-size: 0.73rem;
-                font-weight: 800;
+                background: var(--secondary);
+                color: var(--primary-strong);
+                font-size: 0.75rem;
+                font-weight: 750;
+                white-space: nowrap;
             }
 
-            .menu-photo-wrap {
-                position: relative;
+            .today-badge::before {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: var(--primary-strong);
+                content: "";
+            }
+
+            .menu-card {
                 overflow: hidden;
+                padding: 10px;
                 border: 1px solid var(--line);
-                border-radius: 20px;
-                background: linear-gradient(135deg, rgba(142,202,252,0.12), rgba(47,126,209,0.06));
+                border-radius: 25px;
+                background: var(--panel);
+                box-shadow: var(--shadow);
             }
 
             .menu-photo {
                 display: block;
                 width: 100%;
-                max-height: 620px;
-                aspect-ratio: 16 / 9;
+                max-height: 66vh;
+                min-height: 250px;
+                border-radius: 17px;
+                background: var(--input-bg);
                 object-fit: contain;
             }
 
             .empty-menu {
                 display: grid;
-                min-height: 280px;
-                place-items: center;
+                min-height: 300px;
                 padding: 28px;
+                place-items: center;
                 border: 1px dashed var(--line);
-                border-radius: 20px;
-                background: var(--soft-blue);
+                border-radius: 17px;
+                background:
+                    radial-gradient(circle at 50% 40%, var(--panel-strong), transparent 60%),
+                    var(--secondary);
+                color: var(--muted);
+                line-height: 1.65;
                 text-align: center;
             }
 
-            .empty-menu-icon {
+            .empty-icon {
                 display: grid;
-                width: 66px;
-                height: 66px;
-                place-items: center;
+                width: 58px;
+                height: 58px;
                 margin: 0 auto 15px;
+                place-items: center;
                 border: 1px solid var(--line);
-                border-radius: 22px;
-                background: var(--panel);
-                color: var(--primary);
+                border-radius: 19px;
+                background: var(--panel-strong);
+                color: var(--primary-strong);
             }
 
-            .empty-menu-icon svg { width: 31px; height: 31px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
-            .empty-menu strong { display: block; font-size: 1.08rem; }
-            .empty-menu p { max-width: 42ch; margin: 7px 0 0; color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+            .empty-icon svg { width: 28px; height: 28px; }
 
-            .notice-strip {
+            .empty-menu strong {
+                display: block;
+                margin-bottom: 5px;
+                color: var(--text);
+                font-size: 1.08rem;
+            }
+
+            .footer {
                 display: flex;
-                align-items: center;
-                gap: 12px;
-                margin-top: 16px;
-                padding: 13px 15px;
-                border: 1px solid var(--line);
-                border-radius: 14px;
-                background: var(--soft-blue);
-                color: var(--muted);
-                font-size: 0.82rem;
-                line-height: 1.55;
-            }
-
-            .notice-strip svg { width: 20px; height: 20px; flex: 0 0 auto; fill: none; stroke: var(--primary); stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
-
-            .footer-card {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 22px;
-                position: fixed;
-                z-index: 20;
-                right: 0;
-                bottom: max(14px, env(safe-area-inset-bottom));
-                left: 0;
-                width: min(1120px, calc(100% - 40px));
-                margin: 0 auto;
-                padding: 14px 18px;
-                border: 1px solid var(--line);
-                border-radius: 20px;
-                background: var(--panel);
-                box-shadow: 0 12px 32px rgba(39,84,138,0.07);
-                backdrop-filter: blur(16px);
-            }
-
-            .footer-card strong { display: block; font-size: 1rem; }
-            .footer-card p { margin: 5px 0 0; color: var(--muted); font-size: 0.84rem; line-height: 1.5; }
-
-            .footer-login {
-                display: inline-flex;
-                min-height: 46px;
-                flex: 0 0 auto;
                 align-items: center;
                 justify-content: center;
-                gap: 9px;
-                padding: 11px 17px;
-                border-radius: 13px;
-                background: linear-gradient(135deg, #2f7ed1, #58a7ed);
-                color: #fff;
-                font-size: 0.84rem;
-                font-weight: 800;
-                text-decoration: none;
-                box-shadow: 0 9px 20px rgba(47,126,209,0.18);
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                gap: 7px;
+                margin: 22px 0 0;
+                color: var(--muted);
+                font-size: 0.8rem;
             }
 
-            :root[data-theme="dark"] .footer-login { color: #0d263b; }
-            .footer-login:hover { box-shadow: 0 13px 24px rgba(47,126,209,0.24); }
-            .footer-login svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
-            footer { padding-top: 22px; color: var(--muted); font-size: 0.75rem; text-align: center; }
+            .footer svg { width: 15px; height: 15px; color: var(--primary-strong); }
 
-            @media (max-width: 600px) {
-                body { padding: 12px 12px 130px; }
-                .topbar { gap: 8px; margin-bottom: 15px; padding: 10px; border-radius: 17px; }
-                .brand { gap: 9px; }
-                .brand img { width: 40px; height: 40px; border-radius: 13px; }
-                .brand-copy strong { font-size: 0.84rem; }
-                .brand-copy span { font-size: 0.66rem; }
-                .topbar-actions { gap: 6px; }
-                .theme-toggle, .login-link { min-height: 38px; gap: 5px; padding: 8px 9px; font-size: 0.72rem; }
-                .theme-toggle svg, .login-link svg { width: 16px; height: 16px; }
-                .hero { min-height: 270px; margin-bottom: 16px; padding: 27px 22px; border-radius: 23px; }
-                .hero::before { right: -220px; }
-                .hero-copy p { font-size: 0.91rem; }
-                .date-chip { margin-top: 18px; font-size: 0.78rem; }
-                .menu-card { margin-bottom: 16px; padding: 17px 14px; border-radius: 21px; }
-                .menu-heading { align-items: flex-start; }
-                .menu-heading p { font-size: 0.8rem; line-height: 1.45; }
-                .today-badge { padding: 7px 9px; font-size: 0.67rem; }
-                .menu-photo { min-height: 210px; aspect-ratio: 4 / 3; }
-                .empty-menu { min-height: 230px; padding: 22px 15px; }
-                .footer-card { width: calc(100% - 24px); gap: 12px; padding: 12px; border-radius: 17px; }
-                .footer-card strong { font-size: 0.83rem; }
-                .footer-card p { max-width: 24ch; font-size: 0.7rem; }
-                .footer-login { min-height: 42px; gap: 6px; padding: 9px 11px; font-size: 0.73rem; white-space: nowrap; }
-                .footer-login svg { width: 16px; height: 16px; }
-            }
-
-            @media (max-width: 380px) {
+            @media (max-width: 560px) {
+                .welcome-overlay::before { background-position: 86% 42%; }
+                body { padding: 13px; }
+                .topbar { min-height: 62px; padding: 8px; border-radius: 17px; }
+                .brand { gap: 8px; }
+                .brand img { width: 40px; height: 40px; border-radius: 12px; }
+                .brand-copy strong { font-size: 0.88rem; }
                 .brand-copy span { display: none; }
-                .theme-toggle { width: 38px; padding-inline: 0; }
-                .theme-toggle-label { display: none; }
+                .topbar-actions { gap: 6px; }
+                .theme-toggle { min-height: 40px; gap: 0; padding: 8px; }
+                .theme-toggle-text { display: none; }
+                .login-link { min-height: 40px; gap: 6px; padding: 0 11px; font-size: 0.78rem; }
+                .login-link svg { width: 14px; height: 14px; }
+                main { padding-top: 54px; }
+                .intro { padding: 0 8px; }
+                .menu-section { margin-top: 31px; }
+                .menu-heading { align-items: center; margin-inline: 2px; }
+                .menu-label { font-size: 0.7rem; }
+                .date { font-size: 0.9rem; }
+                .today-badge { padding: 6px 9px; font-size: 0.68rem; }
+                .menu-card { padding: 7px; border-radius: 20px; }
+                .menu-photo { min-height: 205px; border-radius: 14px; }
+                .empty-menu { min-height: 240px; padding: 20px; border-radius: 14px; }
+            }
+
+            :root[data-theme="dark"] .login-link {
+                background: linear-gradient(135deg, #e7f8ff, #bfdfff);
+                color: #0f2341;
+            }
+
+            :root[data-theme="dark"] .topbar,
+            :root[data-theme="dark"] .theme-toggle {
+                border-color: var(--line);
+                background: var(--panel);
+            }
+
+            :root[data-theme="dark"] .menu-card {
+                border-color: var(--line);
+            }
+
+            :root[data-theme="dark"] .empty-menu {
+                background:
+                    radial-gradient(circle at 50% 40%, var(--panel-strong), transparent 60%),
+                    var(--secondary);
             }
 
             @media (prefers-reduced-motion: reduce) {
-                *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+                *, *::before, *::after {
+                    scroll-behavior: auto !important;
+                    transition-duration: 0.01ms !important;
+                }
+
+                .mbg-car {
+                    right: 0;
+                    left: auto;
+                    animation: none;
+                }
+            }
+
+            .topbar {
+                border-color: var(--line);
+                box-shadow: 0 16px 38px rgba(39, 84, 138, 0.09);
+            }
+
+            main {
+                position: relative;
+                isolation: isolate;
+            }
+
+            main::before {
+                position: absolute;
+                top: 16px;
+                left: 50%;
+                z-index: -1;
+                width: min(72vw, 680px);
+                aspect-ratio: 1;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(112, 157, 184, 0.16), transparent 68%);
+                content: "";
+                pointer-events: none;
+                transform: translateX(-50%);
+            }
+
+            h1 {
+                max-width: 860px;
+                text-wrap: balance;
+            }
+
+            h1 span {
+                background: linear-gradient(110deg, var(--primary-strong), #57a9e8 72%, #72c4d2);
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            :root[data-theme="dark"] h1 span {
+                background-image: linear-gradient(110deg, #a4d9ff, #7fc4ee 72%, #8bd1d7);
+            }
+
+            .intro {
+                max-width: 54ch;
+            }
+
+            .menu-section {
+                width: min(100%, 920px);
+                margin-top: clamp(42px, 6vw, 64px);
+            }
+
+            .menu-card {
+                padding: 12px;
+                border-radius: 30px;
+                background: linear-gradient(145deg, var(--panel-strong), var(--panel));
+                box-shadow: 0 28px 72px rgba(39, 84, 138, 0.16);
+                transition: box-shadow 0.25s ease, transform 0.25s ease;
+            }
+
+            .menu-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 34px 82px rgba(39, 84, 138, 0.2);
+            }
+
+            .menu-photo {
+                min-height: clamp(280px, 42vw, 520px);
+                max-height: 72vh;
+                border-radius: 20px;
+            }
+
+            .empty-menu {
+                min-height: clamp(260px, 35vw, 380px);
+            }
+
+            .footer {
+                width: fit-content;
+                max-width: 100%;
+                padding: 11px 16px;
+                border: 1px solid var(--line);
+                border-radius: 999px;
+                background: var(--panel);
+                box-shadow: 0 8px 22px rgba(39, 84, 138, 0.06);
+                line-height: 1.5;
+                text-align: center;
+            }
+
+            @media (max-width: 560px) {
+                .menu-card {
+                    padding: 8px;
+                    border-radius: 23px;
+                }
+
+                .menu-photo {
+                    min-height: 220px;
+                    max-height: 58vh;
+                    border-radius: 16px;
+                }
+
+                .footer {
+                    border-radius: 16px;
+                }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .menu-card {
+                    transition: none;
+                }
+
+                .menu-card:hover {
+                    transform: none;
+                }
             }
         </style>
         <script>
@@ -393,102 +724,121 @@
         </script>
     </head>
     <body>
-        <main class="page">
+        <div class="welcome-overlay" id="welcomeOverlay">
+            <div class="welcome-card">
+                <div class="welcome-visual">
+                    <img class="welcome-logo" src="{{ asset('jpg.foto/logo.jpg.png') }}" alt="Logo MBG">
+                </div>
+                <div class="welcome-badge">Program MBG</div>
+                <h2>Selamat Datang</h2>
+                <p>Monitoring Pengambilan Makanan Bergizi Gratis</p>
+            </div>
+            <div class="mbg-car-track" aria-hidden="true">
+                <img class="mbg-car" src="{{ asset('jpg.foto/mobil-mbg,jpg.png') }}" alt="">
+            </div>
+        </div>
+        <div class="page">
             <header class="topbar">
-                <a class="brand" href="{{ route('home') }}" aria-label="MBG Tracker, halaman utama">
+                <a class="brand" href="{{ route('home') }}" aria-label="MBG Tracker">
                     <img src="{{ asset('jpg.foto/logo.jpg.png') }}" alt="">
                     <span class="brand-copy">
                         <strong>MBG Tracker</strong>
-                        <span>Program makan bergizi gratis</span>
+                        <span>Program Makan Bergizi Gratis</span>
                     </span>
                 </a>
                 <div class="topbar-actions">
-                    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ganti ke mode gelap" aria-pressed="false">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
-                        <span class="theme-toggle-label">Tema</span>
+                    <button type="button" class="theme-toggle" id="themeToggle" aria-label="Mode terang" aria-pressed="false">
+                        <span class="theme-toggle-icon" aria-hidden="true"></span>
+                        <span class="theme-toggle-text">Mode gelap</span>
                     </button>
-                    <a class="login-link" href="{{ route('login', absolute: false) }}">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5M15 12H3"/></svg>
-                        Login petugas
+                    <a class="login-link" href="{{ route('login') }}">
+                        Masuk Petugas
+                        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                            <path d="M4 10h11m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
                     </a>
                 </div>
             </header>
 
-            <section class="hero" aria-labelledby="page-title">
-                <div class="hero-copy">
-                    <span class="eyebrow">Informasi menu untuk semua</span>
-                    <h1 id="page-title">Menu MBG<br>Hari Ini</h1>
-                    <p>Temukan informasi menu Makan Bergizi Gratis hari ini. Halaman ini dapat diakses oleh seluruh warga sekolah tanpa perlu login.</p>
-                    <span class="date-chip">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>
-                        {{ $todayLabel }}
-                    </span>
-                </div>
-            </section>
+            <main>
+                <p class="eyebrow">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 21c4.4-2.6 7-6.1 7-10.7C14.3 9.9 9 12.7 9 17c0 1.5 1 2.8 3 4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                        <path d="M5 5c4.5-.2 7.4 1.5 8.7 5.2M12 21c.1-3.4 1.7-6.5 5-9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                    </svg>
+                    Makanan Bergizi Gratis
+                </p>
+                <h1>Hidangan sehat,<br><span>semangat hebat.</span></h1>
+                <p class="intro">Lihat menu MBG yang disiapkan untuk hari ini. Informasi menu terbuka untuk seluruh warga sekolah.</p>
 
-            <section class="menu-card" aria-labelledby="menu-title">
-                <div class="menu-heading">
-                    <div>
-                        <span class="menu-kicker">Disiapkan untuk hari ini</span>
-                        <h2 id="menu-title">Menu makan bergizi</h2>
-                        <p>Lihat sajian MBG yang tersedia hari ini.</p>
-                    </div>
-                    <span class="today-badge">MENU HARI INI</span>
-                </div>
-
-                @if ($dailyMenu)
-                    <div class="menu-photo-wrap">
-                        <img
-                            class="menu-photo"
-                            src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($dailyMenu->foto) }}"
-                            alt="Foto menu Makan Bergizi Gratis hari ini"
-                        >
-                    </div>
-                    <div class="notice-strip">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 11v5M12 8h.01"/></svg>
-                        <span>Informasi menu ini berlaku untuk {{ \Carbon\Carbon::parse($today)->translatedFormat('d F Y') }}. Silakan hubungi petugas sekolah jika ada pertanyaan.</span>
-                    </div>
-                @else
-                    <div class="empty-menu">
+                <section class="menu-section" aria-label="Menu MBG hari ini">
+                    <div class="menu-heading">
                         <div>
-                            <span class="empty-menu-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24"><path d="M3 3v7a4 4 0 0 0 4 4h1v7M7 3v4M11 3v4M17 3v8M17 3c2 2 3 4 3 6a3 3 0 0 1-3 3v9"/></svg>
-                            </span>
-                            <strong>Menu hari ini belum tersedia</strong>
-                            <p>Foto menu akan tampil di halaman ini setelah diperbarui oleh admin sekolah.</p>
+                            <p class="menu-label">Menu hari ini</p>
+                            <p class="date">{{ \Carbon\Carbon::parse($today)->locale('id')->translatedFormat('l, d F Y') }}</p>
                         </div>
+                        <span class="today-badge">Hari ini</span>
                     </div>
-                @endif
-            </section>
 
-            <section class="footer-card" aria-label="Login petugas">
-                <div>
-                    <strong>Anda petugas MBG?</strong>
-                    <p>Masuk untuk mencatat pengambilan dan mengelola informasi distribusi.</p>
-                </div>
-                <a class="footer-login" href="{{ route('login', absolute: false) }}">
-                    Login sebagai petugas
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </a>
-            </section>
+                    <div class="menu-card">
+                        @if ($dailyMenu)
+                            <img
+                                class="menu-photo"
+                                src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($dailyMenu->foto) }}"
+                                alt="Foto menu MBG hari ini"
+                            >
+                        @else
+                            <div class="empty-menu">
+                                <div>
+                                    <span class="empty-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none">
+                                            <path d="M4 7.5h16v12H4zM7 7.5l1-3h8l1 3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                                            <circle cx="12" cy="13.5" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+                                            <path d="M17 10h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                                        </svg>
+                                    </span>
+                                    <strong>Menu hari ini sedang disiapkan</strong>
+                                    Silakan kunjungi kembali halaman ini nanti.
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </section>
 
-            <footer>MBG Tracker · Informasi menu Makan Bergizi Gratis</footer>
-        </main>
+                <p class="footer">
+                    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <path d="M10 17s-6-3.6-6-8a3.4 3.4 0 0 1 6-2.2A3.4 3.4 0 0 1 16 9c0 4.4-6 8-6 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                    Informasi menu dapat dilihat oleh semua orang.
+                </p>
+            </main>
+        </div>
         <script>
-            const themeToggle = document.getElementById('themeToggle');
-            const updateThemeToggle = () => {
-                const isDark = document.documentElement.dataset.theme === 'dark';
-                themeToggle.setAttribute('aria-pressed', String(isDark));
-                themeToggle.setAttribute('aria-label', isDark ? 'Ganti ke mode terang' : 'Ganti ke mode gelap');
-                themeToggle.querySelector('.theme-toggle-label').textContent = isDark ? 'Gelap' : 'Terang';
-            };
+            const welcomeOverlay = document.getElementById('welcomeOverlay');
+            window.setTimeout(function () {
+                if (welcomeOverlay) {
+                    welcomeOverlay.classList.add('hidden');
+                }
+            }, 2400);
 
-            updateThemeToggle();
-            themeToggle.addEventListener('click', () => {
-                const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', nextTheme);
+            const root = document.documentElement;
+            const themeToggle = document.getElementById('themeToggle');
+            const themeToggleText = themeToggle.querySelector('.theme-toggle-text');
+
+            function applyTheme(theme) {
+                const isDark = theme === 'dark';
+                root.setAttribute('data-theme', theme);
+                themeToggle.setAttribute('aria-pressed', String(isDark));
+                themeToggle.setAttribute('aria-label', isDark ? 'Mode terang' : 'Mode gelap');
+                themeToggleText.textContent = isDark ? 'Mode terang' : 'Mode gelap';
+            }
+
+            applyTheme(root.getAttribute('data-theme') || 'light');
+
+            themeToggle.addEventListener('click', function () {
+                const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
                 localStorage.setItem('mbg-theme', nextTheme);
-                updateThemeToggle();
+                applyTheme(nextTheme);
             });
         </script>
     </body>

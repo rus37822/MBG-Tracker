@@ -12,12 +12,11 @@ class ExampleTest extends TestCase
     /**
      * A basic test example.
      */
-    public function test_the_application_returns_a_successful_response(): void
+    public function test_root_shows_the_public_menu_page(): void
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
-        $response->assertSee('Menu MBG')
-            ->assertSee('Login sebagai petugas');
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Menu MBG Hari Ini')
+            ->assertSee('href="'.route('login').'"', false);
     }
 }
