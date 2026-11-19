@@ -5,7 +5,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#e7edf1">
         <title>Daftar Petugas - MBG Tracker</title>
-        @include('partials.redirect-on-refresh')
         <style>
             :root {
                 color-scheme: light;

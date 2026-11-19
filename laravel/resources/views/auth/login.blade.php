@@ -5,7 +5,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#e7edf1">
         <title>{{ ($adminLogin ?? false) ? 'Masuk Admin' : 'Masuk Petugas' }} - MBG Tracker</title>
-        @include('partials.redirect-on-refresh')
         <style>
             :root {
                 color-scheme: light;
@@ -349,7 +348,7 @@
 
             <p class="footer">Khusus petugas pendataan MBG</p>
             @unless ($adminLogin ?? false)
-                <a class="admin-login-link" href="{{ route('admin.login') }}">Masuk admin</a>
+                <a class="admin-login-link" href="{{ route('admin.login') }}">Build</a>
             @endunless
         </main>
     </body>

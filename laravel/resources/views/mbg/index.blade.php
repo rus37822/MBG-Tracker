@@ -4,7 +4,6 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Pendataan MBG</title>
-        @include('partials.redirect-on-refresh')
         <style>
             :root {
                 --bg-1: #e7edf1;
@@ -3140,6 +3139,261 @@
 
                 .panel-header {
                     padding-bottom: 13px;
+                }
+            }
+
+            .page-shell {
+                width: min(100% - 40px, 1320px);
+                padding-top: 24px;
+            }
+
+            .topbar {
+                border-radius: 20px;
+            }
+
+            .hero-panel {
+                border-radius: 28px;
+            }
+
+            .stat-card,
+            .today-chart,
+            .panel {
+                border: 1px solid var(--line);
+                background: var(--panel);
+                box-shadow: var(--shadow);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+            }
+
+            .stat-card {
+                border-radius: 22px;
+            }
+
+            .stat-card .stat-icon {
+                border-color: var(--line);
+                border-radius: 13px;
+                background: var(--secondary);
+                color: var(--primary-strong);
+            }
+
+            .today-chart,
+            .form-card,
+            .table-card {
+                border-radius: 22px;
+            }
+
+            .page-heading {
+                border-radius: 22px;
+                background: linear-gradient(120deg, var(--panel-strong), var(--secondary));
+            }
+
+            .page-heading-kicker {
+                color: var(--primary-strong);
+            }
+
+            .page-heading-date {
+                color: var(--primary-strong);
+            }
+
+            .page-shell[data-page="form"] .content-grid {
+                grid-template-columns: minmax(0, 980px);
+                justify-content: center;
+            }
+
+            .page-shell[data-page="form"] .form-card {
+                padding: clamp(24px, 4vw, 42px);
+            }
+
+            .form-card .panel-header {
+                align-items: center;
+                margin-bottom: 24px;
+                padding-bottom: 20px;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .panel-header h2 {
+                color: var(--text);
+            }
+
+            .panel-header > span {
+                border: 1px solid var(--line);
+                background: var(--secondary);
+                color: var(--primary-strong);
+            }
+
+            .daily-menu {
+                padding: 18px;
+                border-color: var(--line);
+                border-radius: 18px;
+                background: linear-gradient(145deg, var(--panel-strong), var(--secondary));
+                box-shadow: none;
+            }
+
+            .daily-menu-heading {
+                margin-bottom: 14px;
+            }
+
+            .daily-menu-heading h3 {
+                color: var(--text);
+                font-size: 1rem;
+            }
+
+            .daily-menu-photo {
+                max-height: 300px;
+                border-color: var(--line);
+                border-radius: 14px;
+            }
+
+            .daily-menu-empty {
+                min-height: 112px;
+                border-color: var(--input-border);
+                border-radius: 14px;
+                background: var(--button-soft);
+            }
+
+            .daily-menu-upload-link {
+                border-radius: 12px;
+            }
+
+            .grid-form {
+                gap: 20px;
+            }
+
+            .field {
+                gap: 9px;
+            }
+
+            .field label {
+                color: var(--text);
+                font-size: 0.84rem;
+                font-weight: 700;
+            }
+
+            .field input,
+            .field select,
+            .field textarea {
+                min-height: 50px;
+                border: 1px solid var(--input-border);
+                border-radius: 12px;
+                background: var(--input-bg);
+                color: var(--text);
+                box-shadow: 0 1px 2px rgba(39, 84, 138, 0.04);
+            }
+
+            .field input::placeholder,
+            .field textarea::placeholder {
+                color: var(--muted);
+                opacity: 0.72;
+            }
+
+            .field input[type="file"] {
+                min-height: 58px;
+                padding: 10px;
+                border-style: dashed;
+                cursor: pointer;
+            }
+
+            .field input[type="file"]::file-selector-button {
+                margin-right: 12px;
+                padding: 9px 13px;
+                border: 0;
+                border-radius: 9px;
+                background: var(--secondary);
+                color: var(--primary-strong);
+                font: inherit;
+                font-weight: 700;
+                cursor: pointer;
+            }
+
+            .photo-preview {
+                max-height: 280px;
+                padding: 6px;
+                border: 1px solid var(--line);
+                border-radius: 14px;
+                background: var(--panel-strong);
+            }
+
+            .submit-button {
+                min-height: 54px;
+                border-radius: 13px;
+                letter-spacing: 0.01em;
+            }
+
+            .submit-button::after {
+                margin-left: 9px;
+                content: "\2192";
+                font-size: 1.15rem;
+            }
+
+            .submit-button:focus-visible,
+            .daily-menu-upload-link:focus-visible,
+            .primary-btn:focus-visible {
+                outline: 3px solid var(--primary-strong);
+                outline-offset: 3px;
+            }
+
+            @media (min-width: 641px) and (max-width: 960px) {
+                .page-shell[data-page="form"] .grid-form {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+            }
+
+            @media (max-width: 640px) {
+                .page-shell {
+                    width: 100%;
+                    padding: 12px 14px calc(28px + env(safe-area-inset-bottom));
+                }
+
+                .page-shell[data-page="form"] .hero-panel,
+                .page-shell[data-page="history"] .hero-panel {
+                    display: none;
+                }
+
+                .page-shell[data-page="form"] .page-heading,
+                .page-shell[data-page="history"] .page-heading {
+                    display: flex;
+                    margin: 4px 0 14px;
+                    padding: 20px 18px;
+                    border-radius: 18px;
+                }
+
+                .page-shell[data-page="form"] .page-heading h1 {
+                    font-size: 1.55rem;
+                }
+
+                .page-shell[data-page="form"] .page-heading p {
+                    font-size: 0.86rem;
+                }
+
+                .page-shell[data-page="form"] .form-card {
+                    padding: 20px 16px;
+                }
+
+                .page-shell[data-page="form"] .form-card .panel-header {
+                    margin-bottom: 18px;
+                    padding-bottom: 15px;
+                }
+
+                .page-shell[data-page="form"] .daily-menu {
+                    margin-bottom: 20px;
+                    padding: 14px;
+                }
+
+                .page-shell[data-page="form"] .daily-menu-photo {
+                    max-height: 220px;
+                }
+
+                .page-shell[data-page="form"] .grid-form {
+                    grid-template-columns: minmax(0, 1fr);
+                    gap: 16px;
+                }
+
+                .page-shell[data-page="form"] .submit-button {
+                    position: sticky;
+                    bottom: max(10px, env(safe-area-inset-bottom));
+                    z-index: 5;
+                    margin-top: 20px;
+                    box-shadow: 0 10px 24px rgba(47, 126, 209, 0.3);
                 }
             }
         </style>

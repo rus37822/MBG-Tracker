@@ -1,6 +1,8 @@
 -- Creates the database configured as DB_DATABASE in .env.example.
 -- Import this file with a MySQL user that has permission to create databases.
 -- Do not import into a database that already contains application tables.
+-- To create or restore the admin account after import, configure ADMIN_* in .env
+-- and run `php artisan db:seed` from the Laravel application directory.
 
 CREATE DATABASE IF NOT EXISTS `mbg_tracker`
     CHARACTER SET utf8mb4

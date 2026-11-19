@@ -21,6 +21,9 @@ class AuthTest extends TestCase
             ->assertSee('name="email"', false)
             ->assertSee('name="password"', false)
             ->assertSee('mbg-theme')
+            ->assertSee('"/login"', false)
+            ->assertSee('"/admin/login"', false)
+            ->assertSee('"/register"', false)
             ->assertSee('Belum punya akun? Daftar')
             ->assertSee(route('admin.login'), false)
             ->assertSee('Masuk admin');

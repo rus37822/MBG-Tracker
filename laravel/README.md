@@ -37,19 +37,22 @@ Kata sandi akan di-hash otomatis oleh model pengguna.
 
 ### Pengelolaan akun admin
 
-Setelah migrasi, tentukan akun admin secara manual melalui Tinker. Ganti alamat email dengan email akun yang sudah terdaftar:
+Atur `ADMIN_NAME`, `ADMIN_EMAIL`, dan `ADMIN_PASSWORD` di `.env`. Kata sandi harus
+minimal 8 karakter. Setelah migrasi atau mengimpor `database/schema.sql`, jalankan
+seeder dari folder aplikasi:
 
 ```bash
-php artisan tinker
+php artisan db:seed
 ```
 
-```php
-\Illuminate\Support\Facades\DB::table('users')
-    ->where('email', 'admin@contoh.id')
-    ->update(['is_admin' => true]);
-```
+Seeder membuat akun admin jika belum ada, atau mengaktifkan kembali peran admin
+untuk email tersebut. Menjalankannya ulang tidak mengubah nama atau kata sandi
+akun yang sudah ada. Jalankan kembali setelah database dibuat ulang. Kredensial
+admin tidak disimpan di `schema.sql`.
 
-Admin masuk seperti biasa melalui `/login`. Setelah masuk, tautan kecil **Admin** akan muncul di dashboard MBG untuk membuka `/admin/users`. Hanya akun admin yang dapat mengelola akun. Akun admin terakhir dan akun yang sedang digunakan tidak dapat dihapus.
+Admin masuk melalui `/login`. Setelah masuk, tautan **Admin** akan muncul di
+dashboard MBG untuk membuka `/admin/users`. Hanya akun admin yang dapat mengelola
+akun. Akun admin terakhir dan akun yang sedang digunakan tidak dapat dihapus.
 
 ## Agentic Development
 

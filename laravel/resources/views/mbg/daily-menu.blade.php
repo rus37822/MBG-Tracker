@@ -4,7 +4,6 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Unggah Foto Menu Hari Ini - Pendataan MBG</title>
-        @include('partials.redirect-on-refresh')
         <style>
             :root {
                 color-scheme: light;
