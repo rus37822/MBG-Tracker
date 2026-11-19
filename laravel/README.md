@@ -54,6 +54,61 @@ Admin masuk melalui `/login`. Setelah masuk, tautan **Admin** akan muncul di
 dashboard MBG untuk membuka `/admin/users`. Hanya akun admin yang dapat mengelola
 akun. Akun admin terakhir dan akun yang sedang digunakan tidak dapat dihapus.
 
+## Menjalankan secara lokal
+
+Pastikan PHP dan Composer tersedia, lalu siapkan database MySQL lokal (misalnya
+dari XAMPP). Dari folder `laravel/`:
+
+```bash
+composer install
+copy .env.example .env
+php artisan key:generate
+```
+
+Atur `DB_*` di `.env` agar cocok dengan MySQL lokal dan isi `ADMIN_PASSWORD`
+(minimal 8 karakter), lalu jalankan:
+
+```bash
+php artisan migrate --seed
+npm install
+npm run build
+php artisan serve
+```
+
+Buka `http://127.0.0.1:8000`. File `.env` lokal tidak perlu diganti untuk
+menyiapkan konfigurasi hosting.
+
+## Deploy ke hosting dengan document root `htdocs`
+
+Aplikasi membutuhkan PHP **8.3 atau lebih baru**, ekstensi PHP yang diwajibkan
+Composer, MySQL/MariaDB, dan Apache dengan `mod_rewrite`. Pastikan versi PHP
+hosting memenuhi syarat tersebut sebelum upload.
+
+1. Buat database MySQL dari panel hosting. Di phpMyAdmin, pilih database baru
+   yang masih kosong lalu impor `database/schema.sql`. SQL ini sengaja tidak
+   membuat atau memilih database karena hosting biasanya sudah membuatnya lewat
+   panel.
+2. Jalankan `composer install --no-dev --optimize-autoloader` dan `npm run build`
+   dari folder aplikasi. Upload **isi** folder `laravel/` ke `htdocs` (bukan
+   folder `laravel/` sebagai subfolder), termasuk `vendor/` dan `public/build/`.
+   Jangan upload `.env` lokal, `.git/`, atau `node_modules/`.
+3. Buat `.env` baru di `htdocs` pada server. Atur `APP_ENV=production`,
+   `APP_DEBUG=false`, `APP_URL` ke alamat situs, `APP_KEY` yang unik, dan semua
+   nilai `DB_*` sesuai persis dengan informasi database di panel hosting.
+   Atur juga `ADMIN_NAME`, `ADMIN_EMAIL`, dan kata sandi admin yang kuat.
+4. Pastikan `storage/` dan `bootstrap/cache/` dapat ditulis oleh PHP. Jalankan
+   `php artisan storage:link` dan `php artisan db:seed` jika hosting menyediakan
+   akses perintah Artisan. Jika symlink tidak diizinkan, `.htaccess` tetap
+   melayani berkas publik dari `storage/app/public`.
+
+`index.php` dan `.htaccess` di folder aplikasi menjadi pintu masuk ketika isi
+folder diunggah langsung ke `htdocs`; keduanya tidak mengubah cara menjalankan
+aplikasi lokal melalui `php artisan serve`. Konfigurasi ini menjaga direktori
+kode dan dependensi tidak dapat dibuka langsung melalui web. Jika hosting
+menyediakan direktori di luar `htdocs`, menyimpan kode aplikasi di luar document
+root dan hanya menempatkan berkas `public/` di `htdocs` tetap menjadi pilihan
+yang lebih aman.
+
 ## Agentic Development
 
 Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:

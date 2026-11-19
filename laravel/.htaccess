@@ -1,0 +1,31 @@
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Let the normal Laravel public directory handle direct public-file requests.
+    RewriteRule ^public(?:/|$) - [L]
+
+    # Serve built assets and uploaded files from Laravel's public directory.
+    RewriteCond %{DOCUMENT_ROOT}/public/$1 -f
+    RewriteRule ^(.+)$ public/$1 [L]
+
+    # Serve public uploads even if the host does not allow storage symlinks.
+    RewriteCond %{DOCUMENT_ROOT}/storage/app/public/$1 -f
+    RewriteRule ^storage/(.+)$ storage/app/public/$1 [L]
+    RewriteRule ^storage/app/public(?:/|$) - [L]
+
+    # Never expose application source, dependencies, or private runtime files.
+    RewriteRule ^(?:app|bootstrap|config|database|resources|routes|tests|vendor|storage)(?:/|$) - [F,L,NC]
+
+    # Do not expose hidden files or repository metadata.
+    RewriteRule (^|/)\. - [F,L]
+
+    # Route application requests through the project-root front controller.
+    RewriteRule ^index\.php$ - [L]
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+<FilesMatch "^(?:\.env(?:\..*)?|artisan|composer\.(?:json|lock)|package(?:-lock)?\.json|phpunit\.xml|phpunit\.result\.cache|vite\.config\.js|README\.md|AGENTS\.md|CLAUDE\.md)$">
+    Require all denied
+</FilesMatch>
