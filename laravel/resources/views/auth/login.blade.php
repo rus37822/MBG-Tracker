@@ -297,7 +297,7 @@
                     <p class="status" role="status">{{ session('status') }}</p>
                 @endif
 
-                <form method="POST" action="{{ ($adminLogin ?? false) ? route('admin.login.store') : route('login.store') }}">
+                <form method="POST" action="{{ ($adminLogin ?? false) ? route('admin.login.store', absolute: false) : route('login.store', absolute: false) }}">
                     @csrf
                     <div class="field">
                         <label for="email">{{ ($adminLogin ?? false) ? 'Email admin' : 'Email petugas' }}</label>
@@ -339,16 +339,16 @@
                 </form>
 
                 @if ($adminLogin ?? false)
-                    <a class="register-link" href="{{ route('login') }}">Masuk sebagai petugas</a>
+                    <a class="register-link" href="{{ route('login', absolute: false) }}">Masuk sebagai petugas</a>
                 @else
-                    <a class="register-link" href="{{ route('register') }}">Belum punya akun? Daftar</a>
-                    <a class="back-link" href="{{ route('home') }}">Kembali ke halaman utama</a>
+                    <a class="register-link" href="{{ route('register', absolute: false) }}">Belum punya akun? Daftar</a>
+                    <a class="back-link" href="{{ route('home', absolute: false) }}">Kembali ke halaman utama</a>
                 @endif
             </section>
 
             <p class="footer">Khusus petugas pendataan MBG</p>
             @unless ($adminLogin ?? false)
-                <a class="admin-login-link" href="{{ route('admin.login') }}">Build</a>
+                <a class="admin-login-link" href="{{ route('admin.login', absolute: false) }}">Build</a>
             @endunless
         </main>
     </body>

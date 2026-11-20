@@ -3429,15 +3429,15 @@
                 </div>
 
                 <nav class="desktop-nav" aria-label="Navigasi utama">
-                    <a href="{{ route('mbg.index') }}" @if ($page === 'summary') aria-current="page" @endif>
+                    <a href="{{ route('mbg.index', absolute: false) }}" @if ($page === 'summary') aria-current="page" @endif>
                         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
                         <span>Ringkasan</span>
                     </a>
-                    <a href="{{ route('mbg.form') }}" @if ($page === 'form') aria-current="page" @endif>
+                    <a href="{{ route('mbg.form', absolute: false) }}" @if ($page === 'form') aria-current="page" @endif>
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
                         <span>Pencatatan</span>
                     </a>
-                    <a href="{{ route('mbg.history') }}" @if ($page === 'history') aria-current="page" @endif>
+                    <a href="{{ route('mbg.history', absolute: false) }}" @if ($page === 'history') aria-current="page" @endif>
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.64-6.36L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>
                         <span>Riwayat</span>
                     </a>
@@ -3453,9 +3453,9 @@
                         <time id="dashboard-clock" aria-label="Waktu WIB">{{ \Carbon\Carbon::now('Asia/Jakarta')->format('H:i:s') }} WIB</time>
                     </div>
                     @can('manage-users')
-                        <a class="admin-entry" href="{{ route('admin.users.index') }}">Admin</a>
+                        <a class="admin-entry" href="{{ route('admin.users.index', absolute: false) }}">Admin</a>
                     @endcan
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('logout', absolute: false) }}">
                         @csrf
                         <button class="logout-button" type="submit">Keluar</button>
                     </form>
@@ -3472,7 +3472,7 @@
                     </p>
 
                     <div class="hero-actions">
-                        <a href="{{ route('mbg.form') }}" class="primary-btn">Catat pengambilan</a>
+                        <a href="{{ route('mbg.form', absolute: false) }}" class="primary-btn">Catat pengambilan</a>
                     </div>
                 </div>
 
@@ -3554,20 +3554,20 @@
                             <span class="today-chart-subtitle">{{ \Carbon\Carbon::parse($chartDate)->translatedFormat('d F Y') }} · Jumlah catatan per jam (WIB)</span>
                         </div>
                         <div class="today-chart-controls">
-                            <form action="{{ route('mbg.index') }}" method="GET" class="history-filter chart-date-filter">
+                            <form action="{{ route('mbg.index', absolute: false) }}" method="GET" class="history-filter chart-date-filter">
                                 <label for="chart-date">Pilih tanggal grafik</label>
                                 <input id="chart-date" type="date" name="date" value="{{ $chartDate }}" max="{{ $today }}" required>
                                 <button type="submit">Lihat</button>
                             </form>
                             <nav class="chart-shortcuts" aria-label="Navigasi tanggal grafik">
-                                <a href="{{ route('mbg.index', ['date' => $previousDate]) }}" data-native-navigation>← Sehari sebelumnya</a>
+                                <a href="{{ route('mbg.index', ['date' => $previousDate], absolute: false) }}" data-native-navigation>← Sehari sebelumnya</a>
                                 @if ($selectedDate !== $today)
-                                    <a href="{{ route('mbg.index', ['date' => $today]) }}" data-native-navigation>Hari ini</a>
+                                    <a href="{{ route('mbg.index', ['date' => $today], absolute: false) }}" data-native-navigation>Hari ini</a>
                                 @endif
                                 @if ($selectedDate < $today)
-                                    <a href="{{ route('mbg.index', ['date' => $nextDate]) }}" data-native-navigation>Sehari berikutnya →</a>
+                                    <a href="{{ route('mbg.index', ['date' => $nextDate], absolute: false) }}" data-native-navigation>Sehari berikutnya →</a>
                                 @endif
-                                <a class="chart-export" href="{{ route('mbg.pdf', ['date' => $selectedDate]) }}">Unduh laporan PDF</a>
+                                <a class="chart-export" href="{{ route('mbg.pdf', ['date' => $selectedDate], absolute: false) }}">Unduh laporan PDF</a>
                             </nav>
                             <span class="today-chart-total">{{ $dailyRecordCount }} data</span>
                         </div>
@@ -3613,14 +3613,14 @@
                         @endif
 
                         @can('manage-users')
-                            <a href="{{ route('mbg.daily-menu') }}" class="daily-menu-upload-link">
+                            <a href="{{ route('mbg.daily-menu', absolute: false) }}" class="daily-menu-upload-link">
                                 {{ $dailyMenu ? 'Ganti foto menu' : 'Unggah foto menu' }}
                             </a>
                         @endcan
                     </section>
 
                     <div id="form-feedback" class="alert" role="status" aria-live="polite" hidden></div>
-                    <form id="record-form" action="{{ route('mbg.store') }}" method="POST" enctype="multipart/form-data">
+                    <form id="record-form" action="{{ route('mbg.store', absolute: false) }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="grid-form">
@@ -3665,27 +3665,27 @@
                     <div class="panel-header">
                         <div class="header-actions">
                             <h2>Riwayat Pengambilan</h2>
-                            <a href="{{ route('mbg.pdf', ['date' => $selectedDate]) }}" class="pdf-btn">PDF Tanggal Ini</a>
+                            <a href="{{ route('mbg.pdf', ['date' => $selectedDate], absolute: false) }}" class="pdf-btn">PDF Tanggal Ini</a>
                         </div>
                         <span>{{ \Carbon\Carbon::parse($selectedDate)->translatedFormat('d M Y') }} · {{ $records->count() }} data</span>
                     </div>
 
                     <div class="history-tools">
-                        <form action="{{ route('mbg.history') }}" method="GET" class="history-filter">
+                        <form action="{{ route('mbg.history', absolute: false) }}" method="GET" class="history-filter">
                             <label for="history-date">Tanggal riwayat</label>
                             <input id="history-date" type="date" name="date" value="{{ $selectedDate }}" max="{{ $today }}" required>
                             <button type="submit">Lihat</button>
                         </form>
 
                         <nav class="history-nav" aria-label="Navigasi tanggal riwayat">
-                            <a href="{{ route('mbg.history', ['date' => $previousDate]) }}">&larr; Hari sebelumnya</a>
+                            <a href="{{ route('mbg.history', ['date' => $previousDate], absolute: false) }}">&larr; Hari sebelumnya</a>
                             @if ($selectedDate < $today)
-                                <a href="{{ route('mbg.history', ['date' => $nextDate]) }}">Hari berikutnya &rarr;</a>
+                                <a href="{{ route('mbg.history', ['date' => $nextDate], absolute: false) }}">Hari berikutnya &rarr;</a>
                             @else
                                 <span aria-disabled="true">Hari berikutnya &rarr;</span>
                             @endif
                             @if ($selectedDate !== $today)
-                                <a href="{{ route('mbg.history', ['date' => $today]) }}">Hari ini</a>
+                                <a href="{{ route('mbg.history', ['date' => $today], absolute: false) }}">Hari ini</a>
                             @endif
                         </nav>
                     </div>
@@ -3738,7 +3738,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <form action="{{ route('mbg.destroy', $record) }}" method="POST" class="delete-form">
+                                                <form action="{{ route('mbg.destroy', $record, absolute: false) }}" method="POST" class="delete-form">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="delete-btn">Hapus</button>
@@ -3800,9 +3800,9 @@
             applyTheme(initialTheme);
 
             const pageRoutes = {
-                summary: @json(route('mbg.index')),
-                form: @json(route('mbg.form')),
-                history: @json(route('mbg.history')),
+                summary: @json(route('mbg.index', absolute: false)),
+                form: @json(route('mbg.form', absolute: false)),
+                history: @json(route('mbg.history', absolute: false)),
             };
             const pagePaths = Object.fromEntries(
                 Object.entries(pageRoutes).map(function ([page, route]) {

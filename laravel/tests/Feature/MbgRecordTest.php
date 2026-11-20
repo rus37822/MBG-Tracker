@@ -41,9 +41,9 @@ class MbgRecordTest extends TestCase
         $response = $this->get(route('mbg.index'));
 
         $response->assertOk()
-            ->assertSee('href="'.route('mbg.form').'"', false)
-            ->assertSee('href="'.route('mbg.history').'"', false)
-            ->assertSee('href="'.route('mbg.form').'" class="primary-btn"', false);
+            ->assertSee('href="'.route('mbg.form', absolute: false).'"', false)
+            ->assertSee('href="'.route('mbg.history', absolute: false).'"', false)
+            ->assertSee('href="'.route('mbg.form', absolute: false).'" class="primary-btn"', false);
     }
 
     public function test_each_dashboard_feature_renders_its_own_active_page(): void
@@ -152,9 +152,9 @@ class MbgRecordTest extends TestCase
             ->assertSee('data-hour="10"', false)
             ->assertSee('data-count="0"', false)
             ->assertSee('class="history-filter chart-date-filter"', false)
-            ->assertSee(route('mbg.index', ['date' => '2026-09-24']), false)
-            ->assertSee(route('mbg.index', ['date' => '2026-09-26']), false)
-            ->assertSee(route('mbg.pdf', ['date' => '2026-09-25']), false)
+            ->assertSee(route('mbg.index', ['date' => '2026-09-24'], absolute: false), false)
+            ->assertSee(route('mbg.index', ['date' => '2026-09-26'], absolute: false), false)
+            ->assertSee(route('mbg.pdf', ['date' => '2026-09-25'], absolute: false), false)
             ->assertDontSee('Penerima Selasa');
     }
 
@@ -258,7 +258,7 @@ class MbgRecordTest extends TestCase
 
         $this->post(route('mbg.daily-menu.store'), [
             'foto_menu' => UploadedFile::fake()->createWithContent('menu.png', $photoContents),
-        ])->assertRedirect(route('mbg.daily-menu'));
+        ])->assertRedirect(route('mbg.daily-menu', absolute: false));
 
         $firstMenu = DailyMenu::firstOrFail();
         $firstPhoto = $firstMenu->foto;
@@ -267,7 +267,7 @@ class MbgRecordTest extends TestCase
 
         $this->post(route('mbg.daily-menu.store'), [
             'foto_menu' => UploadedFile::fake()->createWithContent('menu-baru.png', $photoContents),
-        ])->assertRedirect(route('mbg.daily-menu'));
+        ])->assertRedirect(route('mbg.daily-menu', absolute: false));
 
         $updatedMenu = DailyMenu::firstOrFail();
         $this->assertDatabaseCount('daily_menus', 1);
@@ -297,7 +297,7 @@ class MbgRecordTest extends TestCase
         ]);
 
         $this->delete(route('mbg.daily-menu.destroy'))
-            ->assertRedirect(route('mbg.daily-menu'));
+            ->assertRedirect(route('mbg.daily-menu', absolute: false));
 
         $this->assertDatabaseMissing('daily_menus', ['id' => $dailyMenu->id]);
         $this->assertFalse(Storage::disk('public')->exists($photo));
@@ -317,7 +317,7 @@ class MbgRecordTest extends TestCase
 
         $this->post(route('mbg.daily-menu.store'), [
             'foto_menu_kamera' => UploadedFile::fake()->createWithContent('menu-kamera.png', $photoContents),
-        ])->assertRedirect(route('mbg.daily-menu'));
+        ])->assertRedirect(route('mbg.daily-menu', absolute: false));
 
         $dailyMenu = DailyMenu::firstOrFail();
         $this->assertTrue(Storage::disk('public')->exists($dailyMenu->foto));
@@ -330,7 +330,7 @@ class MbgRecordTest extends TestCase
 
         $this->from(route('mbg.daily-menu'))->post(route('mbg.daily-menu.store'), [
             'foto_menu' => UploadedFile::fake()->create('menu.txt', 10, 'text/plain'),
-        ])->assertRedirect(route('mbg.daily-menu'))
+        ])->assertRedirect(route('mbg.daily-menu', absolute: false))
             ->assertSessionHasErrors('foto_menu');
 
         $this->assertDatabaseCount('daily_menus', 0);
@@ -360,7 +360,7 @@ class MbgRecordTest extends TestCase
             ->assertSee('Cari berdasarkan nama atau kelas')
             ->assertSee('data-search="Penerima 25 VII-A"', false)
             ->assertSee('value="2026-09-25"', false)
-            ->assertSee(route('mbg.pdf', ['date' => '2026-09-25']), false);
+            ->assertSee(route('mbg.pdf', ['date' => '2026-09-25'], absolute: false), false);
     }
 
     public function test_home_page_has_light_and_dark_mode_toggle(): void
@@ -383,7 +383,7 @@ class MbgRecordTest extends TestCase
             'catatan' => 'Sudah makan siang',
         ]);
 
-        $response->assertRedirect(route('mbg.form'));
+        $response->assertRedirect(route('mbg.form', absolute: false));
         $this->assertDatabaseHas('mbg_records', [
             'nama' => 'Ayu Putri',
             'kelas' => 'VII-A',
@@ -406,7 +406,7 @@ class MbgRecordTest extends TestCase
             ),
         ]);
 
-        $response->assertRedirect(route('mbg.form'));
+        $response->assertRedirect(route('mbg.form', absolute: false));
 
         $record = MbgRecord::firstOrFail();
         $this->assertNotNull($record->foto);
@@ -429,7 +429,7 @@ class MbgRecordTest extends TestCase
             'foto' => UploadedFile::fake()->create('bukti.txt', 10, 'text/plain'),
         ]);
 
-        $response->assertRedirect(route('mbg.index'))
+        $response->assertRedirect(route('mbg.index', absolute: false))
             ->assertSessionHasErrors('foto');
 
         $this->assertDatabaseCount('mbg_records', 0);
@@ -498,7 +498,7 @@ class MbgRecordTest extends TestCase
 
         $response = $this->delete(route('mbg.destroy', $record));
 
-        $response->assertRedirect(route('mbg.history', ['date' => '2026-09-25']));
+        $response->assertRedirect(route('mbg.history', ['date' => '2026-09-25'], absolute: false));
         $this->assertDatabaseMissing('mbg_records', ['id' => $record->id]);
     }
 

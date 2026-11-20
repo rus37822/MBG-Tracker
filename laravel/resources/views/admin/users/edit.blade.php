@@ -108,7 +108,7 @@
                 <h1 id="edit-title">Ubah akun</h1>
                 <p class="intro">Perbarui informasi atau tetapkan kata sandi baru untuk {{ $user->name }}.</p>
 
-                <form method="POST" action="{{ route('admin.users.update', $user) }}">
+                <form method="POST" action="{{ route('admin.users.update', $user, absolute: false) }}">
                     @csrf
                     @method('PUT')
 
@@ -144,7 +144,7 @@
 
                     <div class="buttons">
                         <button class="submit" type="submit">Simpan perubahan</button>
-                        <a href="{{ route('admin.users.index') }}">Batal</a>
+                        <a href="{{ route('admin.users.index', absolute: false) }}">Batal</a>
                     </div>
                 </form>
             </section>

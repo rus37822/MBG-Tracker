@@ -38,7 +38,7 @@ class AuthController extends Controller
         $user->save();
 
         return redirect()
-            ->route('login')
+            ->to(route('login', absolute: false))
             ->with('status', 'Pendaftaran berhasil. Akun Anda menunggu verifikasi admin sebelum dapat digunakan.');
     }
 
@@ -65,7 +65,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('mbg.form'));
+        return redirect()->intended(route('mbg.form', absolute: false));
     }
 
     public function storeAdminLogin(Request $request): RedirectResponse
@@ -83,7 +83,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('admin.users.index');
+        return redirect()->to(route('admin.users.index', absolute: false));
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -93,6 +93,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->to(route('login', absolute: false));
     }
 }

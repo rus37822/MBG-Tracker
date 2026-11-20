@@ -97,7 +97,7 @@ class MbgRecordController extends Controller
             ], 201);
         }
 
-        return redirect()->route('mbg.form')->with('success', 'Data pengambilan MBG berhasil dicatat.');
+        return redirect()->to(route('mbg.form', absolute: false))->with('success', 'Data pengambilan MBG berhasil dicatat.');
     }
 
     public function dailyMenuUpload()
@@ -125,7 +125,7 @@ class MbgRecordController extends Controller
             Storage::disk('public')->delete($previousPhoto);
         }
 
-        return redirect()->route('mbg.daily-menu')->with('success', 'Foto menu hari ini berhasil diperbarui.');
+        return redirect()->to(route('mbg.daily-menu', absolute: false))->with('success', 'Foto menu hari ini berhasil diperbarui.');
     }
 
     public function destroyDailyMenu(): RedirectResponse
@@ -135,7 +135,7 @@ class MbgRecordController extends Controller
         $dailyMenu->delete();
         Storage::disk('public')->delete($photo);
 
-        return redirect()->route('mbg.daily-menu')->with('success', 'Foto menu hari ini berhasil dihapus.');
+        return redirect()->to(route('mbg.daily-menu', absolute: false))->with('success', 'Foto menu hari ini berhasil dihapus.');
     }
 
     public function exportPdf(string $date)
@@ -170,6 +170,6 @@ class MbgRecordController extends Controller
             Storage::disk('public')->delete($mbgRecord->foto);
         }
 
-        return redirect()->route('mbg.history', ['date' => $recordDate])->with('success', 'Data pengambilan berhasil dihapus.');
+        return redirect()->to(route('mbg.history', ['date' => $recordDate], absolute: false))->with('success', 'Data pengambilan berhasil dihapus.');
     }
 }

@@ -738,7 +738,7 @@
         </div>
         <div class="page">
             <header class="topbar">
-                <a class="brand" href="{{ route('home') }}" aria-label="MBG Tracker">
+                <a class="brand" href="{{ route('home', absolute: false) }}" aria-label="MBG Tracker">
                     <img src="{{ asset('jpg.foto/logo.jpg.png') }}" alt="">
                     <span class="brand-copy">
                         <strong>MBG Tracker</strong>
@@ -750,7 +750,7 @@
                         <span class="theme-toggle-icon" aria-hidden="true"></span>
                         <span class="theme-toggle-text">Mode gelap</span>
                     </button>
-                    <a class="login-link" href="{{ route('login') }}">
+                    <a class="login-link" href="{{ route('login', absolute: false) }}">
                         Masuk Petugas
                         <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
                             <path d="M4 10h11m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>

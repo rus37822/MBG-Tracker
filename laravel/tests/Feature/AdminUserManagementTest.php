@@ -13,7 +13,7 @@ class AdminUserManagementTest extends TestCase
     public function test_guest_must_log_in_before_opening_admin_dashboard(): void
     {
         $this->get(route('admin.users.index'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('login', absolute: false));
     }
 
     public function test_admin_entry_from_login_redirects_admin_to_account_dashboard_after_sign_in(): void
@@ -25,12 +25,12 @@ class AdminUserManagementTest extends TestCase
             ->assertOk()
             ->assertSee('Area Admin')
             ->assertSee('Masuk dengan akun admin')
-            ->assertSee(route('admin.login.store'), false);
+            ->assertSee(route('admin.login.store', absolute: false), false);
 
         $this->post(route('admin.login.store'), [
             'email' => $admin->email,
             'password' => 'password',
-        ])->assertRedirect(route('admin.users.index'));
+        ])->assertRedirect(route('admin.users.index', absolute: false));
 
         $this->assertAuthenticatedAs($admin);
         $this->get(route('admin.users.index'))->assertOk();
@@ -45,7 +45,7 @@ class AdminUserManagementTest extends TestCase
                 'email' => $user->email,
                 'password' => 'password',
             ])
-            ->assertRedirect(route('admin.login'))
+            ->assertRedirect(route('admin.login', absolute: false))
             ->assertSessionHasErrors('email');
 
         $this->assertGuest();
@@ -92,11 +92,11 @@ class AdminUserManagementTest extends TestCase
             ->assertSee('Kelola akun')
             ->assertSee('Petugas Demo')
             ->assertSee('Menunggu verifikasi')
-            ->assertSee(route('admin.users.approve', $user), false)
-            ->assertSee('/mbg/form', false)
+            ->assertSee(route('admin.users.approve', $user, absolute: false), false)
+            ->assertSee('/dashboard', false)
             ->assertSee('/admin/users', false)
-            ->assertSee(route('admin.users.edit', $user), false)
-            ->assertSee(route('mbg.daily-menu'), false);
+            ->assertSee(route('admin.users.edit', $user, absolute: false), false)
+            ->assertSee(route('mbg.daily-menu', absolute: false), false);
 
         $this->get(route('admin.users.edit', $user))
             ->assertOk()
@@ -104,7 +104,7 @@ class AdminUserManagementTest extends TestCase
             ->assertSee('name="password_confirmation"', false);
 
         $this->get(route('mbg.index'))
-            ->assertSee(route('admin.users.index'), false);
+            ->assertSee(route('admin.users.index', absolute: false), false);
     }
 
     public function test_admin_can_search_users_by_name_or_email(): void
@@ -147,7 +147,7 @@ class AdminUserManagementTest extends TestCase
 
         $this->actingAs($admin)
             ->patch(route('admin.users.approve', $user))
-            ->assertRedirect(route('admin.users.index'))
+            ->assertRedirect(route('admin.users.index', absolute: false))
             ->assertSessionHas('status', 'Akun '.$user->name.' berhasil diverifikasi.');
 
         $this->assertDatabaseHas('users', [
@@ -172,7 +172,7 @@ class AdminUserManagementTest extends TestCase
                 'password' => 'password-baru',
                 'password_confirmation' => 'password-baru',
             ])
-            ->assertRedirect(route('admin.users.index'))
+            ->assertRedirect(route('admin.users.index', absolute: false))
             ->assertSessionHas('status');
 
         $user->refresh();
@@ -196,7 +196,7 @@ class AdminUserManagementTest extends TestCase
                 'password_confirmation' => '',
                 'is_admin' => true,
             ])
-            ->assertRedirect(route('admin.users.index'));
+            ->assertRedirect(route('admin.users.index', absolute: false));
 
         $user->refresh();
         $this->assertSame('Nama Baru', $user->name);
@@ -214,7 +214,7 @@ class AdminUserManagementTest extends TestCase
 
         $this->actingAs($admin)
             ->delete(route('admin.users.destroy', $user))
-            ->assertRedirect(route('admin.users.index'));
+            ->assertRedirect(route('admin.users.index', absolute: false));
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
 
         $this->delete(route('admin.users.destroy', $admin))

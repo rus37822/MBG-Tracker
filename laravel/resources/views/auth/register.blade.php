@@ -201,7 +201,7 @@
                 <h1 id="register-title">Buat akun</h1>
                 <p class="intro">Daftar untuk mulai mengelola pencatatan dan distribusi MBG.</p>
 
-                <form method="POST" action="{{ route('register.store') }}">
+                <form method="POST" action="{{ route('register.store', absolute: false) }}">
                     @csrf
                     <div class="field">
                         <label for="name">Nama lengkap</label>
@@ -265,8 +265,8 @@
                     <button class="submit" type="submit">Daftar</button>
                 </form>
 
-                <a class="login-link" href="{{ route('login') }}">Sudah punya akun? Masuk</a>
-                <a class="back-link" href="{{ route('login') }}">Kembali ke login petugas</a>
+                <a class="login-link" href="{{ route('login', absolute: false) }}">Sudah punya akun? Masuk</a>
+                <a class="back-link" href="{{ route('login', absolute: false) }}">Kembali ke login petugas</a>
             </section>
         </main>
     </body>

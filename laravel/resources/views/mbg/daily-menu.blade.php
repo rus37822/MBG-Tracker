@@ -165,7 +165,7 @@
     </head>
     <body>
         <main class="page">
-            <a class="back-link" href="{{ route('mbg.index') }}">&larr; Kembali ke halaman utama</a>
+            <a class="back-link" href="{{ route('mbg.index', absolute: false) }}">&larr; Kembali ke halaman utama</a>
             <section class="card">
                 <p class="eyebrow">Makanan Bergizi Gratis</p>
                 <h1>Unggah Foto Menu Hari Ini</h1>
@@ -181,7 +181,7 @@
                         src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($dailyMenu->foto) }}"
                         alt="Foto menu MBG hari ini"
                     >
-                    <form action="{{ route('mbg.daily-menu.destroy') }}" method="POST" onsubmit="return confirm('Hapus foto menu hari ini?')">
+                    <form action="{{ route('mbg.daily-menu.destroy', absolute: false) }}" method="POST" onsubmit="return confirm('Hapus foto menu hari ini?')">
                         @csrf
                         @method('DELETE')
                         <button class="delete-button" type="submit">Hapus Foto Menu</button>
@@ -190,7 +190,7 @@
                     <div class="empty-photo">Foto menu hari ini belum diunggah.</div>
                 @endif
 
-                <form action="{{ route('mbg.daily-menu.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('mbg.daily-menu.store', absolute: false) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <p>{{ $dailyMenu ? 'Pilih foto menu pengganti dari album atau ambil foto baru.' : 'Pilih foto menu dari album atau ambil foto baru.' }}</p>
                     <label for="foto_menu">Pilih dari album foto</label>

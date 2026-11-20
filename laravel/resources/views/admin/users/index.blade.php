@@ -442,8 +442,8 @@
                     </div>
                 </div>
                 <div class="topbar-links">
-                    <a class="back-link" href="{{ route('mbg.daily-menu') }}">Kelola menu hari ini</a>
-                    <a class="back-link" href="{{ route('mbg.index') }}">
+                    <a class="back-link" href="{{ route('mbg.daily-menu', absolute: false) }}">Kelola menu hari ini</a>
+                    <a class="back-link" href="{{ route('mbg.index', absolute: false) }}">
                         <span aria-hidden="true">&larr;</span>
                         Dashboard petugas
                     </a>
@@ -490,7 +490,7 @@
                     </div>
                     <span class="record-count">Menampilkan {{ $users->count() }} dari {{ $users->total() }} akun</span>
                 </div>
-                <form class="user-search" method="GET" action="{{ route('admin.users.index') }}" role="search">
+                <form class="user-search" method="GET" action="{{ route('admin.users.index', absolute: false) }}" role="search">
                     <input
                         type="search"
                         name="search"
@@ -500,7 +500,7 @@
                     >
                     <button class="search-button" type="submit">Cari</button>
                     @if ($search !== '')
-                        <a class="clear-search" href="{{ route('admin.users.index') }}">Hapus pencarian</a>
+                        <a class="clear-search" href="{{ route('admin.users.index', absolute: false) }}">Hapus pencarian</a>
                     @endif
                 </form>
                 @if (session('status'))
@@ -541,15 +541,15 @@
                                     <td>
                                         <div class="actions">
                                             @if (! $user->is_admin && ! $user->is_approved)
-                                                <form method="POST" action="{{ route('admin.users.approve', $user) }}">
+                                                <form method="POST" action="{{ route('admin.users.approve', $user, absolute: false) }}">
                                                     @csrf
                                                     @method('PATCH')
                                                     <button class="approve-button" type="submit">Verifikasi</button>
                                                 </form>
                                             @endif
-                                            <a class="edit-link" href="{{ route('admin.users.edit', $user) }}">Ubah</a>
+                                            <a class="edit-link" href="{{ route('admin.users.edit', $user, absolute: false) }}">Ubah</a>
                                             @if (! auth()->user()->is($user))
-                                                <form method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Hapus akun {{ $user->name }}?')">
+                                                <form method="POST" action="{{ route('admin.users.destroy', $user, absolute: false) }}" onsubmit="return confirm('Hapus akun {{ $user->name }}?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button class="delete-button" type="submit">Hapus</button>

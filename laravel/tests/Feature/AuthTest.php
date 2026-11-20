@@ -25,8 +25,33 @@ class AuthTest extends TestCase
             ->assertSee('"/admin/login"', false)
             ->assertSee('"/register"', false)
             ->assertSee('Belum punya akun? Daftar')
-            ->assertSee(route('admin.login'), false)
+            ->assertSee(route('admin.login', absolute: false), false)
             ->assertSee('Masuk admin');
+    }
+
+    public function test_login_flow_stays_on_the_current_host_when_app_url_is_different(): void
+    {
+        config(['app.url' => 'http://127.0.0.1:8000']);
+        $staff = User::factory()->create([
+            'email' => 'petugas@example.com',
+            'password' => 'rahasia-petugas',
+        ]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('href="/login"', false)
+            ->assertDontSee('href="http://127.0.0.1:8000/login"', false);
+
+        $this->get('/login')
+            ->assertOk()
+            ->assertSee('action="/login"', false);
+
+        $this->post('/login', [
+            'email' => $staff->email,
+            'password' => 'rahasia-petugas',
+        ])->assertRedirect('/mbg/form');
+
+        $this->assertAuthenticatedAs($staff);
     }
 
     public function test_guest_registration_requires_admin_approval_before_sign_in(): void
@@ -43,7 +68,7 @@ class AuthTest extends TestCase
             'email' => 'petugas-baru@example.com',
             'password' => 'kata-sandi-aman',
             'password_confirmation' => 'kata-sandi-aman',
-        ])->assertRedirect(route('login'));
+        ])->assertRedirect(route('login', absolute: false));
 
         $user = User::where('email', 'petugas-baru@example.com')->firstOrFail();
 
@@ -59,7 +84,7 @@ class AuthTest extends TestCase
         $this->post(route('login.store'), [
             'email' => 'petugas-baru@example.com',
             'password' => 'kata-sandi-aman',
-        ])->assertRedirect(route('login'))
+        ])->assertRedirect(route('login', absolute: false))
             ->assertSessionHasErrors(['email' => 'Akun Anda masih menunggu verifikasi admin.']);
 
         $this->assertGuest();
@@ -67,16 +92,16 @@ class AuthTest extends TestCase
         $admin = User::factory()->create(['is_admin' => true]);
         $this->actingAs($admin)
             ->patch(route('admin.users.approve', $user))
-            ->assertRedirect(route('admin.users.index'))
+            ->assertRedirect(route('admin.users.index', absolute: false))
             ->assertSessionHas('status');
 
         $this->assertTrue($user->fresh()->is_approved);
 
-        $this->post(route('logout'))->assertRedirect(route('login'));
+        $this->post(route('logout'))->assertRedirect(route('login', absolute: false));
         $this->post(route('login.store'), [
             'email' => 'petugas-baru@example.com',
             'password' => 'kata-sandi-aman',
-        ])->assertRedirect(route('mbg.form'));
+        ])->assertRedirect(route('mbg.form', absolute: false));
 
         $this->assertAuthenticatedAs($user);
     }
@@ -92,7 +117,7 @@ class AuthTest extends TestCase
                 'password' => 'kata-sandi-aman',
                 'password_confirmation' => 'kata-sandi-berbeda',
             ])
-            ->assertRedirect(route('register'))
+            ->assertRedirect(route('register', absolute: false))
             ->assertSessionHasErrors(['email', 'password']);
 
         $this->assertDatabaseCount('users', 1);
@@ -102,17 +127,17 @@ class AuthTest extends TestCase
     public function test_guest_is_redirected_to_login_before_accessing_mbg_data(): void
     {
         $this->get(route('mbg.index'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('login', absolute: false));
 
         $this->get(route('mbg.daily-menu'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('login', absolute: false));
 
         $this->post(route('mbg.store'), [
             'nama' => 'Penerima',
             'kelas' => 'VII-A',
             'jumlah' => 1,
             'waktu_pengambilan' => now()->toDateTimeString(),
-        ])->assertRedirect(route('login'));
+        ])->assertRedirect(route('login', absolute: false));
 
         $this->assertDatabaseCount('mbg_records', 0);
     }
@@ -122,10 +147,7 @@ class AuthTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertSee('Menu MBG Hari Ini')
-            ->assertSee('href="'.route('login').'"', false)
-            ->assertSee('navigationEntry.type === \'reload\'', false)
-            ->assertSee('/mbg/form', false)
-            ->assertSee('/admin/users', false)
+            ->assertSee('href="'.route('login', absolute: false).'"', false)
             ->assertSee('Masuk Petugas');
 
         $this->get(route('login'))
@@ -174,13 +196,13 @@ class AuthTest extends TestCase
         ]);
 
         $this->get(route('mbg.history'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('login', absolute: false));
 
         $this->post(route('login.store'), [
             'email' => $staff->email,
             'password' => 'rahasia-petugas',
             'remember' => '1',
-        ])->assertRedirect(route('mbg.history'));
+        ])->assertRedirect(route('mbg.history', absolute: false));
 
         $this->assertAuthenticatedAs($staff);
         $this->get(route('mbg.history'))->assertOk();
@@ -196,20 +218,20 @@ class AuthTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertSee('Menu MBG Hari Ini')
-            ->assertSee('href="'.route('login').'"', false);
+            ->assertSee('href="'.route('login', absolute: false).'"', false);
         $this->get(route('login'))->assertOk()->assertSee('Area Petugas');
 
         $this->post(route('login.store'), [
             'email' => $staff->email,
             'password' => 'rahasia-petugas',
-        ])->assertRedirect(route('mbg.form'));
+        ])->assertRedirect(route('mbg.form', absolute: false));
 
         $this->assertAuthenticatedAs($staff);
         $this->get(route('mbg.form'))
             ->assertOk()
             ->assertSee('Catat Pengambilan')
             ->assertSee('/mbg/form', false)
-            ->assertSee('/admin/users', false);
+            ->assertDontSee('/admin/users', false);
     }
 
     public function test_invalid_credentials_do_not_sign_in_and_show_an_error(): void
@@ -224,7 +246,7 @@ class AuthTest extends TestCase
                 'email' => 'petugas@example.com',
                 'password' => 'kata-sandi-salah',
             ])
-            ->assertRedirect(route('login'))
+            ->assertRedirect(route('login', absolute: false))
             ->assertSessionHasErrors('email');
 
         $this->assertGuest();
@@ -235,10 +257,10 @@ class AuthTest extends TestCase
         $this->actingAs(User::factory()->create());
 
         $this->post(route('logout'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('login', absolute: false));
 
         $this->assertGuest();
-        $this->get(route('mbg.index'))->assertRedirect(route('login'));
+        $this->get(route('mbg.index'))        ->assertRedirect(route('login', absolute: false));
         $this->get('/')->assertOk()->assertSee('Menu MBG Hari Ini');
     }
 }

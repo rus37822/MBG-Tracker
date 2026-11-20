@@ -17,6 +17,6 @@ class ExampleTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertSee('Menu MBG Hari Ini')
-            ->assertSee('href="'.route('login').'"', false);
+            ->assertSee('href="'.route('login', absolute: false).'"', false);
     }
 }

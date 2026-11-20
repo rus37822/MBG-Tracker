@@ -59,7 +59,7 @@ class UserController extends Controller
         $user->forceFill(['is_approved' => true])->save();
 
         return redirect()
-            ->route('admin.users.index')
+            ->to(route('admin.users.index', absolute: false))
             ->with('status', 'Akun '.$user->name.' berhasil diverifikasi.');
     }
 
@@ -83,7 +83,7 @@ class UserController extends Controller
         $user->update($validated);
 
         return redirect()
-            ->route('admin.users.index')
+            ->to(route('admin.users.index', absolute: false))
             ->with('status', 'Akun pengguna berhasil diperbarui.');
     }
 
@@ -104,7 +104,7 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()
-            ->route('admin.users.index')
+            ->to(route('admin.users.index', absolute: false))
             ->with('status', 'Akun pengguna berhasil dihapus.');
     }
 }
